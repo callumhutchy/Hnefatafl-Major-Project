@@ -53,6 +53,7 @@ public class Game : MonoBehaviour
                 goKnight.name = "Knight " + index;
                 goKnight.transform.position = new Vector3(knight.x, 0.5f, knight.y);
                 goKnight.SetActive(true);
+				index++;
             }
 
 			index = 1;
@@ -63,6 +64,7 @@ public class Game : MonoBehaviour
 				goBarbarian.name = "Barbarian " + index;
 				goBarbarian.transform.position = new Vector3(barbarian.x, 0.5f, barbarian.y);
 				goBarbarian.SetActive(true);
+				index++;
 			}
 
 
