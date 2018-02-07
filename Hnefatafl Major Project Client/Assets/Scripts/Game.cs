@@ -12,6 +12,8 @@ public class Game : MonoBehaviour
     public Vector2[] knightPos;
     public Vector2[] barbarianPos;
 
+    public GameObject selectedPiece = null;
+
     // Use this for initialization
     void Start()
     {
@@ -26,7 +28,10 @@ public class Game : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (selectedPiece != null)
+        {
+			
+        }
     }
 
     void SetupPieces()
@@ -53,19 +58,20 @@ public class Game : MonoBehaviour
                 goKnight.name = "Knight " + index;
                 goKnight.transform.position = new Vector3(knight.x, 0.5f, knight.y);
                 goKnight.SetActive(true);
-				index++;
+                index++;
             }
 
-			index = 1;
+            index = 1;
 
-			foreach (Vector2 barbarian in barbarianPos){
-				GameObject goBarbarian = GameObject.Instantiate(piece);
-				goBarbarian.GetComponent<Renderer>().material = barbarianMat;
-				goBarbarian.name = "Barbarian " + index;
-				goBarbarian.transform.position = new Vector3(barbarian.x, 0.5f, barbarian.y);
-				goBarbarian.SetActive(true);
-				index++;
-			}
+            foreach (Vector2 barbarian in barbarianPos)
+            {
+                GameObject goBarbarian = GameObject.Instantiate(piece);
+                goBarbarian.GetComponent<Renderer>().material = barbarianMat;
+                goBarbarian.name = "Barbarian " + index;
+                goBarbarian.transform.position = new Vector3(barbarian.x, 0.5f, barbarian.y);
+                goBarbarian.SetActive(true);
+                index++;
+            }
 
 
         }
