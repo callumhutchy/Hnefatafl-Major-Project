@@ -14,6 +14,8 @@ public class Board : MonoBehaviour
     Material throneMat;
     public List<List<GameObject>> boardTiles = new List<List<GameObject>>();
 
+	public GameObject[,] board = new GameObject[11,11];
+
     GameObject tilePrefab;
 
     //Initialise the board
@@ -73,9 +75,10 @@ public class Board : MonoBehaviour
                 go.transform.position = new Vector3(i, 0, j);
                 go.name = "Tile x=" + i + " z=" + j;
                 row.Add(go);
-
+				go.transform.parent = this.transform;
                 go.SetActive(true);
-
+				
+				board[i,j] = go;
 
             }
         }

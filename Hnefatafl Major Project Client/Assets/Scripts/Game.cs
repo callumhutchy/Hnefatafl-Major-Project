@@ -53,6 +53,11 @@ public class Game : MonoBehaviour
 		king.AddComponent<Selectable>();
 		king.GetComponent<Selectable>().normalMat = kingMat;
 		king.GetComponent<Selectable>().selectedMat = kingSelMat;
+		king.GetComponent<Selectable>().myPosition = new Vector2(5,5);
+		
+		
+		king.transform.parent = GameObject.Find("Tile x=5 z=5").transform;
+		
 		king.SetActive(true);
 
         if (size == 11)
@@ -68,6 +73,11 @@ public class Game : MonoBehaviour
 				goKnight.AddComponent<Selectable>();
 				goKnight.GetComponent<Selectable>().normalMat = knightMat;
 				goKnight.GetComponent<Selectable>().selectedMat = knightSelMat;
+
+				goKnight.GetComponent<Selectable>().myPosition = new Vector2(knight.x,knight.y);
+
+				string tempSearchName = "Tile x=" + knight.x + " z=" + knight.y;
+				goKnight.transform.parent = GameObject.Find(tempSearchName).transform;
 				index++;
             }
 
@@ -83,6 +93,11 @@ public class Game : MonoBehaviour
 				goBarbarian.AddComponent<Selectable>();
 				goBarbarian.GetComponent<Selectable>().normalMat = barbarianMat;
 				goBarbarian.GetComponent<Selectable>().selectedMat = barbarianSelMat;
+
+				goBarbarian.GetComponent<Selectable>().myPosition = new Vector2(barbarian.x, barbarian.y);
+
+				string tempSearchName = "Tile x=" + barbarian.x + " z=" + barbarian.y;
+				goBarbarian.transform.parent = GameObject.Find(tempSearchName).transform;
 				index++;
             }
 
