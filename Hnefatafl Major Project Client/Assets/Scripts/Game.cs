@@ -30,7 +30,7 @@ public class Game : MonoBehaviour
     {
         if (selectedPiece != null)
         {
-			
+
         }
     }
 
@@ -46,6 +46,7 @@ public class Game : MonoBehaviour
         king.GetComponent<Renderer>().material = kingMat;
         king.name = "King";
         king.transform.position = new Vector3(size / 2, 0.5f, size / 2);
+		king.AddComponent<Selectable>();
         king.SetActive(true);
 
         if (size == 11)
@@ -58,6 +59,7 @@ public class Game : MonoBehaviour
                 goKnight.name = "Knight " + index;
                 goKnight.transform.position = new Vector3(knight.x, 0.5f, knight.y);
                 goKnight.SetActive(true);
+				goKnight.AddComponent<Selectable>();
                 index++;
             }
 
@@ -70,6 +72,7 @@ public class Game : MonoBehaviour
                 goBarbarian.name = "Barbarian " + index;
                 goBarbarian.transform.position = new Vector3(barbarian.x, 0.5f, barbarian.y);
                 goBarbarian.SetActive(true);
+				goBarbarian.AddComponent<Selectable>();
                 index++;
             }
 
