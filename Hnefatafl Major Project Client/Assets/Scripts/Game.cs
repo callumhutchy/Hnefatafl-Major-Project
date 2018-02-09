@@ -40,6 +40,10 @@ public class Game : MonoBehaviour
         Material knightMat = (Material)Resources.Load("Materials/KnightMat");
         Material barbarianMat = (Material)Resources.Load("Materials/BarbarianMat");
 
+		Material kingSelMat = (Material)Resources.Load("Materials/KingSelectedMat");
+		Material knightSelMat = (Material)Resources.Load("Materials/KnightSelectedMat");
+		Material barbarianSelMat = (Material)Resources.Load("Materials/BarbarianSelectedMat");
+
         GameObject piece = (GameObject)Resources.Load("Prefabs/GamePiece");
 
         GameObject king = GameObject.Instantiate(piece);
@@ -47,7 +51,9 @@ public class Game : MonoBehaviour
         king.name = "King";
         king.transform.position = new Vector3(size / 2, 0.5f, size / 2);
 		king.AddComponent<Selectable>();
-        king.SetActive(true);
+		king.GetComponent<Selectable>().normalMat = kingMat;
+		king.GetComponent<Selectable>().selectedMat = kingSelMat;
+		king.SetActive(true);
 
         if (size == 11)
         {
@@ -60,7 +66,9 @@ public class Game : MonoBehaviour
                 goKnight.transform.position = new Vector3(knight.x, 0.5f, knight.y);
                 goKnight.SetActive(true);
 				goKnight.AddComponent<Selectable>();
-                index++;
+				goKnight.GetComponent<Selectable>().normalMat = knightMat;
+				goKnight.GetComponent<Selectable>().selectedMat = knightSelMat;
+				index++;
             }
 
             index = 1;
@@ -73,7 +81,9 @@ public class Game : MonoBehaviour
                 goBarbarian.transform.position = new Vector3(barbarian.x, 0.5f, barbarian.y);
                 goBarbarian.SetActive(true);
 				goBarbarian.AddComponent<Selectable>();
-                index++;
+				goBarbarian.GetComponent<Selectable>().normalMat = barbarianMat;
+				goBarbarian.GetComponent<Selectable>().selectedMat = barbarianSelMat;
+				index++;
             }
 
 
