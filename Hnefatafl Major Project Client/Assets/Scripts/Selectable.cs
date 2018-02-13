@@ -35,32 +35,25 @@ public class Selectable : MonoBehaviour
                 DestroyObject(go);
             }
         }
+
+
     }
 
-    void OnMouseEnter()
-    {
-        //Debug.Log("Enter");
-    }
-
-    float nextClick = 0;
+    float speed = 5f;
+    bool timeToMove = false;
+    Transform target;
 
     void OnMouseOver()
     {
         //Debug.Log("Over");
-        if (Input.GetKeyDown(KeyCode.Mouse0) && Time.time > nextClick)
+        if (Input.GetKeyDown(KeyCode.Mouse0))
         {
 
             gameController.selectedPiece = this.transform.gameObject;
             GetComponent<Renderer>().material = selectedMat;
             FindPossibleMoves();
-            nextClick = Time.time + 0.5f;
 
         }
-    }
-
-    void OnMouseExit()
-    {
-        //Debug.Log("Exit");
     }
 
     void FindPossibleMoves()
@@ -77,7 +70,7 @@ public class Selectable : MonoBehaviour
         {
             if (board[(int)myPosition.x - 1, (int)myPosition.y] == null)
             {
-				Debug.Log("West");
+                Debug.Log("West");
                 directions.Add("west");
             }
 
@@ -92,7 +85,7 @@ public class Selectable : MonoBehaviour
         {
             if (board[(int)myPosition.x, (int)myPosition.y + 1] == null)
             {
-				Debug.Log("North");
+                Debug.Log("North");
                 directions.Add("north");
             }
 
@@ -107,7 +100,7 @@ public class Selectable : MonoBehaviour
         {
             if (board[(int)myPosition.x + 1, (int)myPosition.y] == null)
             {
-				Debug.Log("East");
+                Debug.Log("East");
                 directions.Add("east");
             }
 
@@ -122,8 +115,8 @@ public class Selectable : MonoBehaviour
         {
             if (board[(int)myPosition.x, (int)myPosition.y - 1] == null)
             {
-				Debug.Log("South");
-                //directions.Add("south");
+                Debug.Log("South");
+                directions.Add("south");
             }
         }
 
@@ -139,12 +132,10 @@ public class Selectable : MonoBehaviour
 
             int index = 1;
             bool indexIsOOB = false;
-            while (!indexIsOOB && board[(int)myPosition.x, (int)myPosition.y - index] == null)
+            while (!indexIsOOB && board[(int)myPosition.x, (int)myPosition.y - index] == null && !IsCorner((int)myPosition.x, (int)myPosition.y - index, gameController.size))
             {
 
-                GameObject g2 = GameObject.Instantiate(movementTile);
-                g2.transform.position = new Vector3(myPosition.x, 0.25f, myPosition.y - index);
-                selectableTiles.Add(g2);
+                GenerateTile((int)myPosition.x, (int)myPosition.y - index);
 
                 index++;
 
@@ -165,16 +156,15 @@ public class Selectable : MonoBehaviour
             int index = 1;
 
             bool indexIsOOB = false;
-            while (!indexIsOOB && board[(int)myPosition.x, (int)myPosition.y + index] == null)
+            while (!indexIsOOB && board[(int)myPosition.x, (int)myPosition.y + index] == null && !IsCorner((int)myPosition.x, (int)myPosition.y + index, gameController.size))
             {
-                GameObject g2 = GameObject.Instantiate(movementTile);
-                g2.transform.position = new Vector3(myPosition.x, 0.25f, myPosition.y + index);
-                selectableTiles.Add(g2);
+                GenerateTile((int)myPosition.x, (int)myPosition.y + index);
                 index++;
                 if (index >= gameController.size || myPosition.y + index >= gameController.size)
                 {
                     indexIsOOB = true;
                 }
+
             }
 
 
@@ -189,11 +179,10 @@ public class Selectable : MonoBehaviour
             int index = 1;
 
             bool indexIsOOB = false;
-            while (!indexIsOOB && board[(int)myPosition.x + index, (int)myPosition.y] == null)
+            while (!indexIsOOB && board[(int)myPosition.x + index, (int)myPosition.y] == null && !IsCorner((int)myPosition.x + index, (int)myPosition.y, gameController.size))
             {
-                GameObject g2 = GameObject.Instantiate(movementTile);
-                g2.transform.position = new Vector3(myPosition.x + index, 0.25f, myPosition.y);
-                selectableTiles.Add(g2);
+
+                GenerateTile((int)myPosition.x + index, (int)myPosition.y);
                 index++;
                 if (index >= gameController.size || myPosition.x + index >= gameController.size)
                 {
@@ -213,11 +202,9 @@ public class Selectable : MonoBehaviour
             int index = 1;
 
             bool indexIsOOB = false;
-            while (!indexIsOOB && board[(int)myPosition.x - index, (int)myPosition.y] == null)
+            while (!indexIsOOB && board[(int)myPosition.x - index, (int)myPosition.y] == null && !IsCorner((int)myPosition.x - index, (int)myPosition.y, gameController.size))
             {
-                GameObject g2 = GameObject.Instantiate(movementTile);
-                g2.transform.position = new Vector3(myPosition.x - index, 0.25f, myPosition.y);
-                selectableTiles.Add(g2);
+                GenerateTile((int)myPosition.x - index, (int)myPosition.y);
                 index++;
                 if (index >= gameController.size || myPosition.x - index >= gameController.size)
                 {
@@ -229,6 +216,48 @@ public class Selectable : MonoBehaviour
 
         }
 
+    }
+
+    public void MoveToLocation(Transform transform)
+    {
+        foreach (GameObject go in selectableTiles)
+        {
+            DestroyObject(go);
+        }
+        this.transform.position = new Vector3(transform.position.x, 0.5f, transform.position.z);
+		myPosition = new Vector2(transform.position.x, transform.position.z);
+    }
+
+    void GenerateTile(int posX, int posY)
+    {
+        GameObject g2 = GameObject.Instantiate(movementTile);
+        g2.transform.position = new Vector3(posX, 0.25f, posY);
+        g2.AddComponent<MovementTile>();
+        g2.GetComponent<MovementTile>().owner = this.gameObject;
+        selectableTiles.Add(g2);
+
+    }
+
+    bool IsCorner(int x, int y, int width)
+    {
+        if (x == 0 && y == 0)
+        {
+            return true;
+        }
+        else if (x == 0 && y == width - 1)
+        {
+            return true;
+        }
+        else if (y == 0 && x == width - 1)
+        {
+            return true;
+        }
+        else if (x == width - 1 && y == width - 1)
+        {
+            return true;
+        }
+
+        return false;
     }
 
 }

@@ -61,19 +61,23 @@ public class Board : MonoBehaviour
                 if (isBrown)
                 {
                     go.GetComponent<Renderer>().material = brownMat;
+					go.tag = "main_board";
 
                 }else
                 {
                     go.GetComponent<Renderer>().material = creamMat;
+					go.tag = "main_board";
                 }
 
                if (isCorner(i, j))
                 {
                     go.GetComponent<Renderer>().material = cornerMat;
+					go.tag = "corner";
                 }
                 else if (i == width / 2 && j == width / 2)
                 {
 					go.GetComponent<Renderer>().material = throneMat;
+					go.tag = "throne";
                 }
                 
                 isBrown = !isBrown;
