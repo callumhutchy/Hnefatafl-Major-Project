@@ -38,6 +38,12 @@ public class Board : MonoBehaviour
 
         tilePrefab = (GameObject)Resources.Load("Prefabs/BoardTile");
 
+		for(int i = 0; i< 11; i++){
+			for(int j = 0; j < 11; j++){
+				board[i,j] = null;
+			}
+		}
+
         GenerateBoard();
     }
 
@@ -78,7 +84,6 @@ public class Board : MonoBehaviour
 				go.transform.parent = this.transform;
                 go.SetActive(true);
 				
-				board[i,j] = go;
 
             }
         }

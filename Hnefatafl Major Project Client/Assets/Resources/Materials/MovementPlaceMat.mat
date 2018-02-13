@@ -9,7 +9,7 @@ Material:
   m_Name: MovementPlaceMat
   m_Shader: {fileID: 4800000, guid: a6b700a358a79f445add9a15b906f33b, type: 3}
   m_ShaderKeywords: 
-  m_LightmapFlags: 4
+  m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -83,7 +83,7 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.97794116, g: 0.0647167, b: 0.0647167, a: 1}
+    - _Color: {r: 0.4178647, g: 0.40679064, b: 0.72794116, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _MKGlowColor: {r: 1, g: 1, b: 1, a: 1}
     - _MKGlowTexColor: {r: 1, g: 1, b: 1, a: 1}

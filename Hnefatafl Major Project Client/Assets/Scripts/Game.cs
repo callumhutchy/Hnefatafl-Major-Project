@@ -55,7 +55,8 @@ public class Game : MonoBehaviour
 		king.GetComponent<Selectable>().selectedMat = kingSelMat;
 		king.GetComponent<Selectable>().myPosition = new Vector2(5,5);
 		
-		
+		board.board[5,5] = king;
+
 		king.transform.parent = GameObject.Find("Tile x=5 z=5").transform;
 		
 		king.SetActive(true);
@@ -78,6 +79,9 @@ public class Game : MonoBehaviour
 
 				string tempSearchName = "Tile x=" + knight.x + " z=" + knight.y;
 				goKnight.transform.parent = GameObject.Find(tempSearchName).transform;
+
+				board.board[(int) knight.x, (int) knight.y] = goKnight;
+
 				index++;
             }
 
@@ -98,6 +102,9 @@ public class Game : MonoBehaviour
 
 				string tempSearchName = "Tile x=" + barbarian.x + " z=" + barbarian.y;
 				goBarbarian.transform.parent = GameObject.Find(tempSearchName).transform;
+
+				board.board[(int) barbarian.x, (int) barbarian.y] = goBarbarian;
+
 				index++;
             }
 

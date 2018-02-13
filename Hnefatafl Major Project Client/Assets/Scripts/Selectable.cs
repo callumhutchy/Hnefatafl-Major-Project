@@ -12,10 +12,15 @@ public class Selectable : MonoBehaviour
     public Material normalMat;
     public Material selectedMat;
 
+    public GameObject movementTile;
+
+    public List<GameObject> selectableTiles = new List<GameObject>();
+
     // Use this for initialization
     void Start()
     {
         gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>();
+        movementTile = (GameObject)Resources.Load("Prefabs/MovementPlace");
     }
 
     // Update is called once per frame
@@ -25,71 +30,204 @@ public class Selectable : MonoBehaviour
         {
             //GetComponent<cakeslice.Outline>().enabled = false;
             GetComponent<Renderer>().material = normalMat;
+            foreach (GameObject go in selectableTiles)
+            {
+                DestroyObject(go);
+            }
         }
     }
 
     void OnMouseEnter()
     {
-        Debug.Log("Enter");
+        //Debug.Log("Enter");
     }
+
+    float nextClick = 0;
 
     void OnMouseOver()
     {
-        Debug.Log("Over");
-        if (Input.GetMouseButton(0))
+        //Debug.Log("Over");
+        if (Input.GetKeyDown(KeyCode.Mouse0) && Time.time > nextClick)
         {
+
             gameController.selectedPiece = this.transform.gameObject;
             GetComponent<Renderer>().material = selectedMat;
             FindPossibleMoves();
+            nextClick = Time.time + 0.5f;
+
         }
     }
 
     void OnMouseExit()
     {
-        Debug.Log("Exit");
+        //Debug.Log("Exit");
     }
 
     void FindPossibleMoves()
     {
         GameObject[,] board = gameController.board.board;
-        Vector2 north, south, east, west;
+        List<string> directions = new List<string>();
 
-		List<Vector2> directions = new List<Vector2>(); 
-
+        //Is tile west null
         if (myPosition.x == 0)
         {
-            north = new Vector2(-1, -1);
-        }else{
-			north = new Vector2(myPosition.x - 1, myPosition.y);
-			directions.Add(north);
-		}
+            //Debug.Log("West null");
+        }
+        else
+        {
+            if (board[(int)myPosition.x - 1, (int)myPosition.y] == null)
+            {
+				Debug.Log("West");
+                directions.Add("west");
+            }
 
+        }
+
+        //Is tile north null
+        if (myPosition.y == gameController.size - 1)
+        {
+            //Debug.Log("North Null");
+        }
+        else
+        {
+            if (board[(int)myPosition.x, (int)myPosition.y + 1] == null)
+            {
+				Debug.Log("North");
+                directions.Add("north");
+            }
+
+        }
+
+        //Is tile east null
+        if (myPosition.x == gameController.size - 1)
+        {
+            //Debug.Log("East Null");
+        }
+        else
+        {
+            if (board[(int)myPosition.x + 1, (int)myPosition.y] == null)
+            {
+				Debug.Log("East");
+                directions.Add("east");
+            }
+
+        }
+
+        //Is tile south null
         if (myPosition.y == 0)
         {
-            west = new Vector2(-1, -1);
-        }else{
-			west = new Vector2(myPosition.x, myPosition.y -1);
-			directions.Add(west);
-		}
-
-        if (myPosition.x == gameController.size)
+            //Debug.Log("South Null");
+        }
+        else
         {
-            south = new Vector2(-1, -1);
-        }else{
-			south = new Vector2(myPosition.x + 1, myPosition.y);
-			directions.Add(south);
-		}
+            if (board[(int)myPosition.x, (int)myPosition.y - 1] == null)
+            {
+				Debug.Log("South");
+                //directions.Add("south");
+            }
+        }
 
-        if (myPosition.y == gameController.size)
+        if (myPosition.x < 0 || myPosition.x >= gameController.size || myPosition.y < 0 || myPosition.y >= gameController.size)
         {
-            east = new Vector2(-1, -1);
-        }else{
-			east = new Vector2(myPosition.x, myPosition.y + 1);
-			directions.Add(east);
-		}
+            return;
+        }
+
+        if (directions.Contains("south"))
+        {
+
+            Debug.Log("South Pieces");
+
+            int index = 1;
+            bool indexIsOOB = false;
+            while (!indexIsOOB && board[(int)myPosition.x, (int)myPosition.y - index] == null)
+            {
+
+                GameObject g2 = GameObject.Instantiate(movementTile);
+                g2.transform.position = new Vector3(myPosition.x, 0.25f, myPosition.y - index);
+                selectableTiles.Add(g2);
+
+                index++;
+
+                if (index >= gameController.size || myPosition.y - index < 0)
+                {
+                    indexIsOOB = true;
+                }
+            }
+
+        }
+
+        if (directions.Contains("north"))
+        {
+
+            Debug.Log("North Pieces");
+
+
+            int index = 1;
+
+            bool indexIsOOB = false;
+            while (!indexIsOOB && board[(int)myPosition.x, (int)myPosition.y + index] == null)
+            {
+                GameObject g2 = GameObject.Instantiate(movementTile);
+                g2.transform.position = new Vector3(myPosition.x, 0.25f, myPosition.y + index);
+                selectableTiles.Add(g2);
+                index++;
+                if (index >= gameController.size || myPosition.y + index >= gameController.size)
+                {
+                    indexIsOOB = true;
+                }
+            }
 
 
 
+        }
+
+        if (directions.Contains("east"))
+        {
+
+            Debug.Log("East Pieces");
+
+            int index = 1;
+
+            bool indexIsOOB = false;
+            while (!indexIsOOB && board[(int)myPosition.x + index, (int)myPosition.y] == null)
+            {
+                GameObject g2 = GameObject.Instantiate(movementTile);
+                g2.transform.position = new Vector3(myPosition.x + index, 0.25f, myPosition.y);
+                selectableTiles.Add(g2);
+                index++;
+                if (index >= gameController.size || myPosition.x + index >= gameController.size)
+                {
+                    indexIsOOB = true;
+                }
+            }
+
+
+
+        }
+
+        if (directions.Contains("west"))
+        {
+
+            Debug.Log("West Pieces");
+
+            int index = 1;
+
+            bool indexIsOOB = false;
+            while (!indexIsOOB && board[(int)myPosition.x - index, (int)myPosition.y] == null)
+            {
+                GameObject g2 = GameObject.Instantiate(movementTile);
+                g2.transform.position = new Vector3(myPosition.x - index, 0.25f, myPosition.y);
+                selectableTiles.Add(g2);
+                index++;
+                if (index >= gameController.size || myPosition.x - index >= gameController.size)
+                {
+                    indexIsOOB = true;
+                }
+            }
+
+
+
+        }
 
     }
 
