@@ -218,14 +218,18 @@ public class Selectable : MonoBehaviour
 
     }
 
-    public void MoveToLocation(Transform transform)
-    {
+    public void MoveToLocation(Transform tran)
+    {   
+
+
         foreach (GameObject go in selectableTiles)
         {
             DestroyObject(go);
         }
-        this.transform.position = new Vector3(transform.position.x, 0.5f, transform.position.z);
-		myPosition = new Vector2(transform.position.x, transform.position.z);
+        gameController.board.board[(int)this.transform.position.x, (int)this.transform.position.z] = null;
+        this.transform.position = new Vector3(tran.position.x, 0.5f, tran.position.z);
+		myPosition = new Vector2(tran.position.x, tran.position.z);
+        gameController.board.board[(int)myPosition.x, (int)myPosition.y] = this.gameObject;
     }
 
     void GenerateTile(int posX, int posY)
