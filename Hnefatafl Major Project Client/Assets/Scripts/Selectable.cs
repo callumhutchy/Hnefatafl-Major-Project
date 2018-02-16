@@ -70,7 +70,6 @@ public class Selectable : MonoBehaviour
         {
             if (board[(int)myPosition.x - 1, (int)myPosition.y] == null)
             {
-                Debug.Log("West");
                 directions.Add("west");
             }
 
@@ -85,7 +84,6 @@ public class Selectable : MonoBehaviour
         {
             if (board[(int)myPosition.x, (int)myPosition.y + 1] == null)
             {
-                Debug.Log("North");
                 directions.Add("north");
             }
 
@@ -100,7 +98,6 @@ public class Selectable : MonoBehaviour
         {
             if (board[(int)myPosition.x + 1, (int)myPosition.y] == null)
             {
-                Debug.Log("East");
                 directions.Add("east");
             }
 
@@ -115,7 +112,6 @@ public class Selectable : MonoBehaviour
         {
             if (board[(int)myPosition.x, (int)myPosition.y - 1] == null)
             {
-                Debug.Log("South");
                 directions.Add("south");
             }
         }
@@ -127,8 +123,6 @@ public class Selectable : MonoBehaviour
 
         if (directions.Contains("south"))
         {
-
-            Debug.Log("South Pieces");
 
             int index = 1;
             bool indexIsOOB = false;
@@ -149,9 +143,6 @@ public class Selectable : MonoBehaviour
 
         if (directions.Contains("north"))
         {
-
-            Debug.Log("North Pieces");
-
 
             int index = 1;
 
@@ -174,8 +165,6 @@ public class Selectable : MonoBehaviour
         if (directions.Contains("east"))
         {
 
-            Debug.Log("East Pieces");
-
             int index = 1;
 
             bool indexIsOOB = false;
@@ -196,9 +185,6 @@ public class Selectable : MonoBehaviour
 
         if (directions.Contains("west"))
         {
-
-            Debug.Log("West Pieces");
-
             int index = 1;
 
             bool indexIsOOB = false;
@@ -206,13 +192,11 @@ public class Selectable : MonoBehaviour
             {
                 GenerateTile((int)myPosition.x - index, (int)myPosition.y);
                 index++;
-                if (index >= gameController.size || myPosition.x - index >= gameController.size)
+                if (index >= gameController.size || myPosition.x - index < 0)
                 {
                     indexIsOOB = true;
                 }
             }
-
-
 
         }
 
@@ -220,8 +204,6 @@ public class Selectable : MonoBehaviour
 
     public void MoveToLocation(Transform tran)
     {   
-
-
         foreach (GameObject go in selectableTiles)
         {
             DestroyObject(go);
