@@ -7,6 +7,8 @@ public class Selectable : MonoBehaviour
 
     public Game gameController;
 
+    public Piece piece;
+
     public Vector2 myPosition;
 
     public Material normalMat;
@@ -39,9 +41,6 @@ public class Selectable : MonoBehaviour
 
     }
 
-    float speed = 5f;
-    bool timeToMove = false;
-    Transform target;
 
     void OnMouseOver()
     {
@@ -126,7 +125,7 @@ public class Selectable : MonoBehaviour
 
             int index = 1;
             bool indexIsOOB = false;
-            while (!indexIsOOB && board[(int)myPosition.x, (int)myPosition.y - index] == null && !IsCorner((int)myPosition.x, (int)myPosition.y - index, gameController.size))
+            while (!indexIsOOB && board[(int)myPosition.x, (int)myPosition.y - index] == null && ((!IsCorner((int)myPosition.x, (int)myPosition.y - index, gameController.size) && piece != Piece.King) || piece == Piece.King ) )
             {
 
                 GenerateTile((int)myPosition.x, (int)myPosition.y - index);
@@ -147,7 +146,7 @@ public class Selectable : MonoBehaviour
             int index = 1;
 
             bool indexIsOOB = false;
-            while (!indexIsOOB && board[(int)myPosition.x, (int)myPosition.y + index] == null && !IsCorner((int)myPosition.x, (int)myPosition.y + index, gameController.size))
+            while (!indexIsOOB && board[(int)myPosition.x, (int)myPosition.y + index] == null && ((!IsCorner((int)myPosition.x, (int)myPosition.y + index, gameController.size)&& piece != Piece.King) || piece == Piece.King ))
             {
                 GenerateTile((int)myPosition.x, (int)myPosition.y + index);
                 index++;
@@ -168,7 +167,7 @@ public class Selectable : MonoBehaviour
             int index = 1;
 
             bool indexIsOOB = false;
-            while (!indexIsOOB && board[(int)myPosition.x + index, (int)myPosition.y] == null && !IsCorner((int)myPosition.x + index, (int)myPosition.y, gameController.size))
+            while (!indexIsOOB && board[(int)myPosition.x + index, (int)myPosition.y] == null && ((!IsCorner((int)myPosition.x + index, (int)myPosition.y, gameController.size) && piece != Piece.King) || piece == Piece.King))
             {
 
                 GenerateTile((int)myPosition.x + index, (int)myPosition.y);
@@ -188,7 +187,7 @@ public class Selectable : MonoBehaviour
             int index = 1;
 
             bool indexIsOOB = false;
-            while (!indexIsOOB && board[(int)myPosition.x - index, (int)myPosition.y] == null && !IsCorner((int)myPosition.x - index, (int)myPosition.y, gameController.size))
+            while (!indexIsOOB && board[(int)myPosition.x - index, (int)myPosition.y] == null && ((!IsCorner((int)myPosition.x - index, (int)myPosition.y, gameController.size) && piece != Piece.King) || piece == Piece.King))
             {
                 GenerateTile((int)myPosition.x - index, (int)myPosition.y);
                 index++;
@@ -202,6 +201,11 @@ public class Selectable : MonoBehaviour
 
     }
 
+    void SetNormal(){
+        gameController.selectedPiece = null;
+        GetComponent<Renderer>().material = normalMat;
+    }
+
     public void MoveToLocation(Transform tran)
     {   
         foreach (GameObject go in selectableTiles)
@@ -212,6 +216,7 @@ public class Selectable : MonoBehaviour
         this.transform.position = new Vector3(tran.position.x, 0.5f, tran.position.z);
 		myPosition = new Vector2(tran.position.x, tran.position.z);
         gameController.board.board[(int)myPosition.x, (int)myPosition.y] = this.gameObject;
+        SetNormal();
     }
 
     void GenerateTile(int posX, int posY)
@@ -246,4 +251,10 @@ public class Selectable : MonoBehaviour
         return false;
     }
 
+}
+
+public enum Piece{
+    King,
+    Barbarian,
+    Knight
 }

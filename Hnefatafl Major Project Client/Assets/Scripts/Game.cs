@@ -54,6 +54,7 @@ public class Game : MonoBehaviour
 		king.GetComponent<Selectable>().normalMat = kingMat;
 		king.GetComponent<Selectable>().selectedMat = kingSelMat;
 		king.GetComponent<Selectable>().myPosition = new Vector2(5,5);
+        king.GetComponent<Selectable>().piece = Piece.King;
 		
 		board.board[5,5] = king;
 
@@ -74,6 +75,7 @@ public class Game : MonoBehaviour
 				goKnight.AddComponent<Selectable>();
 				goKnight.GetComponent<Selectable>().normalMat = knightMat;
 				goKnight.GetComponent<Selectable>().selectedMat = knightSelMat;
+                goKnight.GetComponent<Selectable>().piece = Piece.Knight;
 
 				goKnight.GetComponent<Selectable>().myPosition = new Vector2(knight.x,knight.y);
 
@@ -97,6 +99,7 @@ public class Game : MonoBehaviour
 				goBarbarian.AddComponent<Selectable>();
 				goBarbarian.GetComponent<Selectable>().normalMat = barbarianMat;
 				goBarbarian.GetComponent<Selectable>().selectedMat = barbarianSelMat;
+                goBarbarian.GetComponent<Selectable>().piece = Piece.Barbarian;
 
 				goBarbarian.GetComponent<Selectable>().myPosition = new Vector2(barbarian.x, barbarian.y);
 
