@@ -45,9 +45,9 @@ public class Selectable : MonoBehaviour
     void OnMouseOver()
     {
         //Debug.Log("Over");
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetMouseButtonDown(0))
         {
-
+            
             gameController.selectedPiece = this.transform.gameObject;
             GetComponent<Renderer>().material = selectedMat;
             FindPossibleMoves();
