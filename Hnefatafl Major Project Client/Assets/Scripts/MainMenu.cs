@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class MainMenu : MonoBehaviour {
 
+	public string Player1Name = "";
+	public string Player2Name = "";
+	
+
 	// Use this for initialization
 	void Start () {
 		
@@ -13,4 +17,19 @@ public class MainMenu : MonoBehaviour {
 	void Update () {
 		
 	}
+
+	public void OnTwoPlayerGameClick(){
+
+	}
+
+	public void OnMultiplayerGameClick(){
+
+	}
+
+	public void OnPlayGameClick(){
+
+	}
+
+
+
 }

@@ -14,6 +14,11 @@ public class Game : MonoBehaviour
 
     public GameObject selectedPiece = null;
 
+    public bool isFirstPlayer = true;
+    
+
+
+
     // Use this for initialization
     void Start()
     {
@@ -33,6 +38,8 @@ public class Game : MonoBehaviour
 
         }
     }
+
+
 
     void SetupPieces()
     {
