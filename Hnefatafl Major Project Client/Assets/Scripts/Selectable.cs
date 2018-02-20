@@ -44,8 +44,7 @@ public class Selectable : MonoBehaviour
 
     void OnMouseOver()
     {
-        //Debug.Log("Over");
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && ((gameController.isBarbarians && this.gameObject.tag.Equals("barbarian")) || (!gameController.isBarbarians && !this.gameObject.tag.Equals("barbarian")) ))
         {
             
             gameController.selectedPiece = this.transform.gameObject;
