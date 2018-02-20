@@ -35,7 +35,7 @@ public class Game : MonoBehaviour
     }
 
     public void NextTurn(){
-
+        isBarbarians = !isBarbarians;
     }
 
     // Update is called once per frame

@@ -44,9 +44,9 @@ public class Selectable : MonoBehaviour
 
     void OnMouseOver()
     {
-        if (Input.GetMouseButtonDown(0) && ((gameController.isBarbarians && this.gameObject.tag.Equals("barbarian")) || (!gameController.isBarbarians && !this.gameObject.tag.Equals("barbarian")) ))
+        if (Input.GetMouseButtonDown(0) && ((gameController.isBarbarians && this.gameObject.tag.Equals("barbarian")) || (!gameController.isBarbarians && !this.gameObject.tag.Equals("barbarian"))))
         {
-            
+
             gameController.selectedPiece = this.transform.gameObject;
             GetComponent<Renderer>().material = selectedMat;
             FindPossibleMoves();
@@ -124,7 +124,7 @@ public class Selectable : MonoBehaviour
 
             int index = 1;
             bool indexIsOOB = false;
-            while (!indexIsOOB && board[(int)myPosition.x, (int)myPosition.y - index] == null && ((!IsCorner((int)myPosition.x, (int)myPosition.y - index, gameController.size) && piece != Piece.King) || piece == Piece.King ) )
+            while (!indexIsOOB && board[(int)myPosition.x, (int)myPosition.y - index] == null && ((!IsCorner((int)myPosition.x, (int)myPosition.y - index, gameController.size) && piece != Piece.King) || piece == Piece.King))
             {
 
                 GenerateTile((int)myPosition.x, (int)myPosition.y - index);
@@ -145,7 +145,7 @@ public class Selectable : MonoBehaviour
             int index = 1;
 
             bool indexIsOOB = false;
-            while (!indexIsOOB && board[(int)myPosition.x, (int)myPosition.y + index] == null && ((!IsCorner((int)myPosition.x, (int)myPosition.y + index, gameController.size)&& piece != Piece.King) || piece == Piece.King ))
+            while (!indexIsOOB && board[(int)myPosition.x, (int)myPosition.y + index] == null && ((!IsCorner((int)myPosition.x, (int)myPosition.y + index, gameController.size) && piece != Piece.King) || piece == Piece.King))
             {
                 GenerateTile((int)myPosition.x, (int)myPosition.y + index);
                 index++;
@@ -200,22 +200,27 @@ public class Selectable : MonoBehaviour
 
     }
 
-    void SetNormal(){
+    void SetNormal()
+    {
         gameController.selectedPiece = null;
         GetComponent<Renderer>().material = normalMat;
     }
 
     public void MoveToLocation(Transform tran)
-    {   
+    {
         foreach (GameObject go in selectableTiles)
         {
             DestroyObject(go);
         }
         gameController.board.board[(int)this.transform.position.x, (int)this.transform.position.z] = null;
         this.transform.position = new Vector3(tran.position.x, 0.5f, tran.position.z);
-		myPosition = new Vector2(tran.position.x, tran.position.z);
+        myPosition = new Vector2(tran.position.x, tran.position.z);
         gameController.board.board[(int)myPosition.x, (int)myPosition.y] = this.gameObject;
+
         SetNormal();
+
+        gameController.NextTurn();
+
     }
 
     void GenerateTile(int posX, int posY)
@@ -252,7 +257,8 @@ public class Selectable : MonoBehaviour
 
 }
 
-public enum Piece{
+public enum Piece
+{
     King,
     Barbarian,
     Knight
