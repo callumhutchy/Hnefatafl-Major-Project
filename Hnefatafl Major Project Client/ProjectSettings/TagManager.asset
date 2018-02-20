@@ -10,6 +10,7 @@ TagManager:
   - barbarian
   - knight
   - king
+  - game_data
   layers:
   - Default
   - TransparentFX

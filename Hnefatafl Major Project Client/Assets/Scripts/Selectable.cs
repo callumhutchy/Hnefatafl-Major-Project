@@ -218,7 +218,7 @@ public class Selectable : MonoBehaviour
         gameController.board.board[(int)myPosition.x, (int)myPosition.y] = this.gameObject;
 
         SetNormal();
-
+        gameController.CheckForTaken();
         gameController.NextTurn();
 
     }
