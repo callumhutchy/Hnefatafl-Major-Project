@@ -7,6 +7,9 @@ TagManager:
   - corner
   - throne
   - main_board
+  - barbarian
+  - knight
+  - king
   layers:
   - Default
   - TransparentFX

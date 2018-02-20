@@ -16,6 +16,7 @@ public class Game : MonoBehaviour
 
     public bool isFirstPlayer = true;
     
+    public bool isBarbarians = false;
 
 
 
@@ -28,6 +29,13 @@ public class Game : MonoBehaviour
 
         board.Generate(size);
         SetupPieces();
+
+
+
+    }
+
+    public void NextTurn(){
+
     }
 
     // Update is called once per frame
@@ -62,7 +70,7 @@ public class Game : MonoBehaviour
 		king.GetComponent<Selectable>().selectedMat = kingSelMat;
 		king.GetComponent<Selectable>().myPosition = new Vector2(5,5);
         king.GetComponent<Selectable>().piece = Piece.King;
-		
+		king.gameObject.tag = "king";
 		board.board[5,5] = king;
 
 		king.transform.parent = GameObject.Find("Tile x=5 z=5").transform;
@@ -85,7 +93,7 @@ public class Game : MonoBehaviour
                 goKnight.GetComponent<Selectable>().piece = Piece.Knight;
 
 				goKnight.GetComponent<Selectable>().myPosition = new Vector2(knight.x,knight.y);
-
+                goKnight.gameObject.tag = "knight";
 				string tempSearchName = "Tile x=" + knight.x + " z=" + knight.y;
 				goKnight.transform.parent = GameObject.Find(tempSearchName).transform;
 
@@ -109,7 +117,7 @@ public class Game : MonoBehaviour
                 goBarbarian.GetComponent<Selectable>().piece = Piece.Barbarian;
 
 				goBarbarian.GetComponent<Selectable>().myPosition = new Vector2(barbarian.x, barbarian.y);
-
+                goBarbarian.gameObject.tag = "barbarian";
 				string tempSearchName = "Tile x=" + barbarian.x + " z=" + barbarian.y;
 				goBarbarian.transform.parent = GameObject.Find(tempSearchName).transform;
 
