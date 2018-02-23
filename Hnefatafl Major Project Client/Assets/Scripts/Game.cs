@@ -9,8 +9,8 @@ public class Game : MonoBehaviour
 
     public int size = 11;
 
-    public Vector2[] knightPos;
-    public Vector2[] barbarianPos;
+    public List<Vector2> knightPos = new List<Vector2>();
+    public List<Vector2> barbarianPos = new List<Vector2>();
 
     public GameObject selectedPiece = null;
 
@@ -60,12 +60,54 @@ public class Game : MonoBehaviour
 
     public void Setup()
     {
-        knightPos = new Vector2[12] { new Vector2(5, 3), new Vector2(4, 4), new Vector2(5, 4), new Vector2(6, 4), new Vector2(3, 5), new Vector2(4, 5), new Vector2(6, 5), new Vector2(7, 5), new Vector2(4, 6), new Vector2(5, 6), new Vector2(6, 6), new Vector2(5, 7) };
-
-        barbarianPos = new Vector2[24] { new Vector2(3, 0), new Vector2(4, 0), new Vector2(5, 0), new Vector2(6, 0), new Vector2(7, 0), new Vector2(5, 1), new Vector2(0, 3), new Vector2(0, 4), new Vector2(0, 5), new Vector2(0, 6), new Vector2(0, 7), new Vector2(1, 5), new Vector2(10, 3), new Vector2(10, 4), new Vector2(10, 5), new Vector2(10, 6), new Vector2(10, 7), new Vector2(9, 5), new Vector2(5, 9), new Vector2(3, 10), new Vector2(4, 10), new Vector2(5, 10), new Vector2(6, 10), new Vector2(7, 10) };
+        FillKnightPos();
+        FillBarbarianPos();
 
         board.Generate(size);
         SetupPieces();
+    }
+
+    void FillKnightPos(){
+        knightPos.Add(new Vector2(5,3));
+        knightPos.Add(new Vector2(4,4));
+        knightPos.Add(new Vector2(5,4));
+        knightPos.Add(new Vector2(6,4));
+        knightPos.Add(new Vector2(3,5));
+        knightPos.Add(new Vector2(4,5));
+        knightPos.Add(new Vector2(6,5));
+        knightPos.Add(new Vector2(7,5));
+        knightPos.Add(new Vector2(4,6));
+        knightPos.Add(new Vector2(5,6));
+        knightPos.Add(new Vector2(6,6));
+        knightPos.Add(new Vector2(5,7));
+
+    }
+
+    void FillBarbarianPos(){
+        barbarianPos.Add(new Vector2(3,0));
+        barbarianPos.Add(new Vector2(4,0));
+        barbarianPos.Add(new Vector2(5,0));
+        barbarianPos.Add(new Vector2(6,0));
+        barbarianPos.Add(new Vector2(7,0));
+        barbarianPos.Add(new Vector2(5,1));
+        barbarianPos.Add(new Vector2(0,3));
+        barbarianPos.Add(new Vector2(0,4));
+        barbarianPos.Add(new Vector2(0,5));
+        barbarianPos.Add(new Vector2(0,6));
+        barbarianPos.Add(new Vector2(0,7));
+        barbarianPos.Add(new Vector2(1,5));
+        barbarianPos.Add(new Vector2(10,3));
+        barbarianPos.Add(new Vector2(10,4));
+        barbarianPos.Add(new Vector2(10,5));
+        barbarianPos.Add(new Vector2(10,6));
+        barbarianPos.Add(new Vector2(10,7));
+        barbarianPos.Add(new Vector2(9,5));
+        barbarianPos.Add(new Vector2(5,9));
+        barbarianPos.Add(new Vector2(3,10));
+        barbarianPos.Add(new Vector2(4,10));
+        barbarianPos.Add(new Vector2(5,10));
+        barbarianPos.Add(new Vector2(6,10));
+        barbarianPos.Add(new Vector2(7,10));
     }
 
 
@@ -87,7 +129,60 @@ public class Game : MonoBehaviour
     {
         if(isBarbarians){
             foreach(Vector2 knight in knightPos){
+
+                bool isTaken = false;
+
+                Vector2 north, east, south, west;
+                north = new Vector2(knight.x, knight.y + 1);
+                east = new Vector2(knight.x + 1, knight.y);
+                south = new Vector2(knight.x, knight.y - 1);
+                west = new Vector2(knight.x - 1, knight.y);
                 
+                bool northNull = false, eastNull = false, southNull = false, westNull = false;
+                bool northPiece = false, eastPiece = false, southPiece = false, westPiece = false;
+
+                if(north.x < 0 || north.y < 0 || north.x >= size || north.y >= size){
+                    northNull = true;
+                }else if(board.board[(int)north.x,(int)north.y] != null){
+                    if(board.board[(int)north.x, (int)north.y].gameObject.tag.Equals("barbarian")){
+                    northPiece = true;
+                    }
+                }
+
+                if(south.x < 0 || south.y < 0 || south.x >= size || south.y >= size){
+                    southNull = true;
+                }else if(board.board[(int)south.x,(int)south.y] != null){
+                    if(board.board[(int)south.x, (int)south.y].gameObject.tag.Equals("barbarian")){
+                    southPiece = true;
+                    }
+                }
+
+                if(east.x < 0 || east.y < 0 || east.x >= size || east.y >= size){
+                    eastNull = true;
+                }else if(board.board[(int)east.x, (int)east.y].gameObject.tag.Equals("barbarian")){
+                    eastPiece = true;
+                }
+
+                if(west.x < 0 || west.y < 0 || west.x >= size || west.y >= size){
+                    westNull = true;
+                }else if(board.board[(int)west.x , (int)west.y].gameObject.tag.Equals("barbarian")){
+                    westPiece = true;
+                }
+
+                if(northPiece && southPiece){
+                    isTaken = true;
+                }
+                if(eastPiece && westPiece){
+                    isTaken = true;
+                }
+
+                if(isTaken){
+                    knightsTaken++;
+                    GameObject.Destroy(board.board[(int)knight.x, (int)knight.y]);    
+                    
+                }
+
+
             }
         }else{
             foreach(Vector2 barbarian in barbarianPos){
