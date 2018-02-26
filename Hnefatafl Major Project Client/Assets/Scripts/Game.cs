@@ -64,7 +64,7 @@ public class Game : MonoBehaviour
     {
         FillKnightPos();
         FillBarbarianPos();
-        kingPos = new Vector2(5,5);
+        kingPos = new Vector2(5, 5);
 
         board.Generate(size);
         SetupPieces();
@@ -124,10 +124,7 @@ public class Game : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (selectedPiece != null)
-        {
-
-        }
+        
     }
 
     public void CheckForTaken()
@@ -136,105 +133,126 @@ public class Game : MonoBehaviour
         {
             foreach (Vector2 knight in knightPos)
             {
-                takenAlgo("barbarian", knight);
-               
+                takenAlgo("barbarian", knight, false);
             }
+
+            takenAlgo("barbarian", kingPos, true);
+
         }
         else
         {
             foreach (Vector2 barbarian in barbarianPos)
             {
-                takenAlgo("knight", barbarian);
+                takenAlgo("knight", barbarian, false);
             }
         }
     }
 
-    void takenAlgo(string side, Vector2 piece){
-         Debug.Log(piece.x + " " + piece.y);
+    void takenAlgo(string side, Vector2 piece, bool isKing)
+    {
+        //Debug.Log(piece.x + " " + piece.y);
 
-                bool isTaken = false;
+        bool isTaken = false;
 
-                Vector2 north, east, south, west;
-                north = new Vector2(piece.x, piece.y + 1);
-                east = new Vector2(piece.x + 1, piece.y);
-                south = new Vector2(piece.x, piece.y - 1);
-                west = new Vector2(piece.x - 1, piece.y);
+        Vector2 north, east, south, west;
+        north = new Vector2(piece.x, piece.y + 1);
+        east = new Vector2(piece.x + 1, piece.y);
+        south = new Vector2(piece.x, piece.y - 1);
+        west = new Vector2(piece.x - 1, piece.y);
 
-                bool northNull = false, eastNull = false, southNull = false, westNull = false;
-                bool northPiece = false, eastPiece = false, southPiece = false, westPiece = false;
+        bool northNull = false, eastNull = false, southNull = false, westNull = false;
+        bool northPiece = false, eastPiece = false, southPiece = false, westPiece = false;
 
-                if (north.x < 0 || north.y < 0 || north.x >= size || north.y >= size)
-                {
-                    northNull = true;
-                    Debug.Log("North Null");
-                }
-                else if (board.board[(int)north.x, (int)north.y] != null)
-                {
-                    if (board.board[(int)north.x, (int)north.y].gameObject.tag.Equals(side))
-                    {
-                        Debug.Log("Theres a north piece");
-                        northPiece = true;
-                    }
-                }
+        if (north.x < 0 || north.y < 0 || north.x >= size || north.y >= size)
+        {
+            northNull = true;
+            //Debug.Log("North Null");
+        }
+        else if (board.board[(int)north.x, (int)north.y] != null)
+        {
+            if (board.board[(int)north.x, (int)north.y].gameObject.tag.Equals(side))
+            {
+                //Debug.Log("Theres a north piece");
+                northPiece = true;
+            }
+        }
 
-                if (south.x < 0 || south.y < 0 || south.x >= size || south.y >= size)
-                {
-                    southNull = true;
-                    Debug.Log("South Null");
-                }
-                else if (board.board[(int)south.x, (int)south.y] != null)
-                {
-                    if (board.board[(int)south.x, (int)south.y].gameObject.tag.Equals(side))
-                    {
-                        Debug.Log("Theres a south piece");
-                        southPiece = true;
-                    }
-                }
+        if (south.x < 0 || south.y < 0 || south.x >= size || south.y >= size)
+        {
+            southNull = true;
+            //Debug.Log("South Null");
+        }
+        else if (board.board[(int)south.x, (int)south.y] != null)
+        {
+            if (board.board[(int)south.x, (int)south.y].gameObject.tag.Equals(side))
+            {
+                //Debug.Log("Theres a south piece");
+                southPiece = true;
+            }
+        }
 
-                if (east.x < 0 || east.y < 0 || east.x >= size || east.y >= size)
-                {
-                    eastNull = true;
-                    Debug.Log("East Null");
-                }
-                else if (board.board[(int)east.x, (int)east.y] != null)
-                {
-                    if (board.board[(int)east.x, (int)east.y].gameObject.tag.Equals(side))
-                    {
-                        Debug.Log("Theres an east piece");
-                        eastPiece = true;
-                    }
-                }
+        if (east.x < 0 || east.y < 0 || east.x >= size || east.y >= size)
+        {
+            eastNull = true;
+            //Debug.Log("East Null");
+        }
+        else if (board.board[(int)east.x, (int)east.y] != null)
+        {
+            if (board.board[(int)east.x, (int)east.y].gameObject.tag.Equals(side))
+            {
+                //Debug.Log("Theres an east piece");
+                eastPiece = true;
+            }
+        }
 
-                if (west.x < 0 || west.y < 0 || west.x >= size || west.y >= size)
-                {
-                    westNull = true;
-                    Debug.Log("West Null");
-                }
-                else if (board.board[(int)west.x, (int)west.y] != null)
-                {
-                    if (board.board[(int)west.x, (int)west.y].gameObject.tag.Equals(side))
-                    {
-                        Debug.Log("There a west piece");
-                        westPiece = true;
-                    }
-                }
+        if (west.x < 0 || west.y < 0 || west.x >= size || west.y >= size)
+        {
+            westNull = true;
+            //Debug.Log("West Null");
+        }
+        else if (board.board[(int)west.x, (int)west.y] != null)
+        {
+            if (board.board[(int)west.x, (int)west.y].gameObject.tag.Equals(side))
+            {
+                //Debug.Log("There a west piece");
+                westPiece = true;
+            }
+        }
 
-                if (northPiece && southPiece)
-                {
-                    isTaken = true;
-                }
-                if (eastPiece && westPiece)
-                {
-                    isTaken = true;
-                }
+        if (northPiece && southPiece && !isKing)
+        {
+            isTaken = true;
+        }
+        if (eastPiece && westPiece && !isKing)
+        {
+            isTaken = true;
+        }
 
-                if (isTaken)
-                {
-                    Debug.Log("Taken");
-                    knightsTaken++;
-                    GameObject.Destroy(board.board[(int)piece.x, (int)piece.y]);
+        if ((northPiece || northNull) && (eastPiece || eastNull) && (southPiece || southNull) && (westPiece || westNull) && isKing)
+        {
+            isTaken = true;
+        }
 
-                }
+
+        if (isTaken)
+        {
+            GameObject.Destroy(board.board[(int)piece.x, (int)piece.y]);
+
+            if (side == "barbarian" && !isKing)
+            {
+                knightsTaken++;
+            }
+            else if (side == "knight" && !isKing)
+            {
+                barbariansTaken++;
+            }
+            else if (isKing)
+            {
+                Debug.Log("Barbarians win!!!");
+            }
+
+
+        }
 
 
     }

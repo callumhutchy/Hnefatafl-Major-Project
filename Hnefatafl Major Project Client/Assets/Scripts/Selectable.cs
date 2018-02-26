@@ -227,6 +227,9 @@ public class Selectable : MonoBehaviour
         else if (this.gameObject.tag.Equals("king"))
         {
             gameController.kingPos = new Vector2(tran.position.x, tran.position.z);
+            if(IsCorner((int)gameController.kingPos.x, (int)gameController.kingPos.y, 11) && !IsThrone((int)gameController.kingPos.x, (int)gameController.kingPos.y)){
+                Debug.Log("Knights Win");
+            }
         }
 
         myPosition = new Vector2(tran.position.x, tran.position.z);
