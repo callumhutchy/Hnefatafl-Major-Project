@@ -12,6 +12,8 @@ public class Game : MonoBehaviour
     public List<Vector2> knightPos = new List<Vector2>();
     public List<Vector2> barbarianPos = new List<Vector2>();
 
+    public Vector2 kingPos;
+
     public GameObject selectedPiece = null;
 
     public bool isFirstPlayer = true;
@@ -62,52 +64,55 @@ public class Game : MonoBehaviour
     {
         FillKnightPos();
         FillBarbarianPos();
+        kingPos = new Vector2(5,5);
 
         board.Generate(size);
         SetupPieces();
     }
 
-    void FillKnightPos(){
-        knightPos.Add(new Vector2(5,3));
-        knightPos.Add(new Vector2(4,4));
-        knightPos.Add(new Vector2(5,4));
-        knightPos.Add(new Vector2(6,4));
-        knightPos.Add(new Vector2(3,5));
-        knightPos.Add(new Vector2(4,5));
-        knightPos.Add(new Vector2(6,5));
-        knightPos.Add(new Vector2(7,5));
-        knightPos.Add(new Vector2(4,6));
-        knightPos.Add(new Vector2(5,6));
-        knightPos.Add(new Vector2(6,6));
-        knightPos.Add(new Vector2(5,7));
+    void FillKnightPos()
+    {
+        knightPos.Add(new Vector2(5, 3));
+        knightPos.Add(new Vector2(4, 4));
+        knightPos.Add(new Vector2(5, 4));
+        knightPos.Add(new Vector2(6, 4));
+        knightPos.Add(new Vector2(3, 5));
+        knightPos.Add(new Vector2(4, 5));
+        knightPos.Add(new Vector2(6, 5));
+        knightPos.Add(new Vector2(7, 5));
+        knightPos.Add(new Vector2(4, 6));
+        knightPos.Add(new Vector2(5, 6));
+        knightPos.Add(new Vector2(6, 6));
+        knightPos.Add(new Vector2(5, 7));
 
     }
 
-    void FillBarbarianPos(){
-        barbarianPos.Add(new Vector2(3,0));
-        barbarianPos.Add(new Vector2(4,0));
-        barbarianPos.Add(new Vector2(5,0));
-        barbarianPos.Add(new Vector2(6,0));
-        barbarianPos.Add(new Vector2(7,0));
-        barbarianPos.Add(new Vector2(5,1));
-        barbarianPos.Add(new Vector2(0,3));
-        barbarianPos.Add(new Vector2(0,4));
-        barbarianPos.Add(new Vector2(0,5));
-        barbarianPos.Add(new Vector2(0,6));
-        barbarianPos.Add(new Vector2(0,7));
-        barbarianPos.Add(new Vector2(1,5));
-        barbarianPos.Add(new Vector2(10,3));
-        barbarianPos.Add(new Vector2(10,4));
-        barbarianPos.Add(new Vector2(10,5));
-        barbarianPos.Add(new Vector2(10,6));
-        barbarianPos.Add(new Vector2(10,7));
-        barbarianPos.Add(new Vector2(9,5));
-        barbarianPos.Add(new Vector2(5,9));
-        barbarianPos.Add(new Vector2(3,10));
-        barbarianPos.Add(new Vector2(4,10));
-        barbarianPos.Add(new Vector2(5,10));
-        barbarianPos.Add(new Vector2(6,10));
-        barbarianPos.Add(new Vector2(7,10));
+    void FillBarbarianPos()
+    {
+        barbarianPos.Add(new Vector2(3, 0));
+        barbarianPos.Add(new Vector2(4, 0));
+        barbarianPos.Add(new Vector2(5, 0));
+        barbarianPos.Add(new Vector2(6, 0));
+        barbarianPos.Add(new Vector2(7, 0));
+        barbarianPos.Add(new Vector2(5, 1));
+        barbarianPos.Add(new Vector2(0, 3));
+        barbarianPos.Add(new Vector2(0, 4));
+        barbarianPos.Add(new Vector2(0, 5));
+        barbarianPos.Add(new Vector2(0, 6));
+        barbarianPos.Add(new Vector2(0, 7));
+        barbarianPos.Add(new Vector2(1, 5));
+        barbarianPos.Add(new Vector2(10, 3));
+        barbarianPos.Add(new Vector2(10, 4));
+        barbarianPos.Add(new Vector2(10, 5));
+        barbarianPos.Add(new Vector2(10, 6));
+        barbarianPos.Add(new Vector2(10, 7));
+        barbarianPos.Add(new Vector2(9, 5));
+        barbarianPos.Add(new Vector2(5, 9));
+        barbarianPos.Add(new Vector2(3, 10));
+        barbarianPos.Add(new Vector2(4, 10));
+        barbarianPos.Add(new Vector2(5, 10));
+        barbarianPos.Add(new Vector2(6, 10));
+        barbarianPos.Add(new Vector2(7, 10));
     }
 
 
@@ -127,68 +132,111 @@ public class Game : MonoBehaviour
 
     public void CheckForTaken()
     {
-        if(isBarbarians){
-            foreach(Vector2 knight in knightPos){
+        if (isBarbarians)
+        {
+            foreach (Vector2 knight in knightPos)
+            {
+                takenAlgo("barbarian", knight);
+               
+            }
+        }
+        else
+        {
+            foreach (Vector2 barbarian in barbarianPos)
+            {
+                takenAlgo("knight", barbarian);
+            }
+        }
+    }
+
+    void takenAlgo(string side, Vector2 piece){
+         Debug.Log(piece.x + " " + piece.y);
 
                 bool isTaken = false;
 
                 Vector2 north, east, south, west;
-                north = new Vector2(knight.x, knight.y + 1);
-                east = new Vector2(knight.x + 1, knight.y);
-                south = new Vector2(knight.x, knight.y - 1);
-                west = new Vector2(knight.x - 1, knight.y);
-                
+                north = new Vector2(piece.x, piece.y + 1);
+                east = new Vector2(piece.x + 1, piece.y);
+                south = new Vector2(piece.x, piece.y - 1);
+                west = new Vector2(piece.x - 1, piece.y);
+
                 bool northNull = false, eastNull = false, southNull = false, westNull = false;
                 bool northPiece = false, eastPiece = false, southPiece = false, westPiece = false;
 
-                if(north.x < 0 || north.y < 0 || north.x >= size || north.y >= size){
+                if (north.x < 0 || north.y < 0 || north.x >= size || north.y >= size)
+                {
                     northNull = true;
-                }else if(board.board[(int)north.x,(int)north.y] != null){
-                    if(board.board[(int)north.x, (int)north.y].gameObject.tag.Equals("barbarian")){
-                    northPiece = true;
+                    Debug.Log("North Null");
+                }
+                else if (board.board[(int)north.x, (int)north.y] != null)
+                {
+                    if (board.board[(int)north.x, (int)north.y].gameObject.tag.Equals(side))
+                    {
+                        Debug.Log("Theres a north piece");
+                        northPiece = true;
                     }
                 }
 
-                if(south.x < 0 || south.y < 0 || south.x >= size || south.y >= size){
+                if (south.x < 0 || south.y < 0 || south.x >= size || south.y >= size)
+                {
                     southNull = true;
-                }else if(board.board[(int)south.x,(int)south.y] != null){
-                    if(board.board[(int)south.x, (int)south.y].gameObject.tag.Equals("barbarian")){
-                    southPiece = true;
+                    Debug.Log("South Null");
+                }
+                else if (board.board[(int)south.x, (int)south.y] != null)
+                {
+                    if (board.board[(int)south.x, (int)south.y].gameObject.tag.Equals(side))
+                    {
+                        Debug.Log("Theres a south piece");
+                        southPiece = true;
                     }
                 }
 
-                if(east.x < 0 || east.y < 0 || east.x >= size || east.y >= size){
+                if (east.x < 0 || east.y < 0 || east.x >= size || east.y >= size)
+                {
                     eastNull = true;
-                }else if(board.board[(int)east.x, (int)east.y].gameObject.tag.Equals("barbarian")){
-                    eastPiece = true;
+                    Debug.Log("East Null");
+                }
+                else if (board.board[(int)east.x, (int)east.y] != null)
+                {
+                    if (board.board[(int)east.x, (int)east.y].gameObject.tag.Equals(side))
+                    {
+                        Debug.Log("Theres an east piece");
+                        eastPiece = true;
+                    }
                 }
 
-                if(west.x < 0 || west.y < 0 || west.x >= size || west.y >= size){
+                if (west.x < 0 || west.y < 0 || west.x >= size || west.y >= size)
+                {
                     westNull = true;
-                }else if(board.board[(int)west.x , (int)west.y].gameObject.tag.Equals("barbarian")){
-                    westPiece = true;
+                    Debug.Log("West Null");
+                }
+                else if (board.board[(int)west.x, (int)west.y] != null)
+                {
+                    if (board.board[(int)west.x, (int)west.y].gameObject.tag.Equals(side))
+                    {
+                        Debug.Log("There a west piece");
+                        westPiece = true;
+                    }
                 }
 
-                if(northPiece && southPiece){
+                if (northPiece && southPiece)
+                {
                     isTaken = true;
                 }
-                if(eastPiece && westPiece){
+                if (eastPiece && westPiece)
+                {
                     isTaken = true;
                 }
 
-                if(isTaken){
+                if (isTaken)
+                {
+                    Debug.Log("Taken");
                     knightsTaken++;
-                    GameObject.Destroy(board.board[(int)knight.x, (int)knight.y]);    
-                    
+                    GameObject.Destroy(board.board[(int)piece.x, (int)piece.y]);
+
                 }
 
 
-            }
-        }else{
-            foreach(Vector2 barbarian in barbarianPos){
-
-            }
-        }
     }
 
     void SetupPieces()

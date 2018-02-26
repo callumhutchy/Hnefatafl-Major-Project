@@ -214,7 +214,23 @@ public class Selectable : MonoBehaviour
         }
         gameController.board.board[(int)this.transform.position.x, (int)this.transform.position.z] = null;
         this.transform.position = new Vector3(tran.position.x, 0.5f, tran.position.z);
+        if (this.gameObject.tag.Equals("barbarian"))
+        {
+            gameController.barbarianPos.Remove(new Vector2(this.transform.position.x, this.transform.position.y));
+            gameController.barbarianPos.Add(new Vector2(tran.position.x, tran.position.z));
+        }
+        else if (this.gameObject.tag.Equals("knight"))
+        {
+            gameController.knightPos.Remove(new Vector2(this.transform.position.x, this.transform.position.y));
+            gameController.knightPos.Add(new Vector2(tran.position.x, tran.position.z));
+        }
+        else if (this.gameObject.tag.Equals("king"))
+        {
+            gameController.kingPos = new Vector2(tran.position.x, tran.position.z);
+        }
+
         myPosition = new Vector2(tran.position.x, tran.position.z);
+
         gameController.board.board[(int)myPosition.x, (int)myPosition.y] = this.gameObject;
 
         SetNormal();
@@ -230,7 +246,6 @@ public class Selectable : MonoBehaviour
         g2.AddComponent<MovementTile>();
         g2.GetComponent<MovementTile>().owner = this.gameObject;
         selectableTiles.Add(g2);
-
     }
 
     bool IsCorner(int x, int y, int width)
@@ -250,10 +265,20 @@ public class Selectable : MonoBehaviour
         else if (x == width - 1 && y == width - 1)
         {
             return true;
+        }else if(x == 5 && y == 5){
+            return true;
         }
-
+       
         return false;
     }
+
+    bool IsThrone(int x, int y){
+        if(x == 5 && y == 5){
+            return true;
+        }
+        return false;
+    }
+
 
 }
 
