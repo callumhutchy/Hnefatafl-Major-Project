@@ -32,12 +32,12 @@ public class Game : MonoBehaviour
     void Start()
     {
 
-        Setup();
+       // Setup();
 
 
     }
 
-    public void Awake1()
+    public void Awake()
     {
         gameData = GameObject.FindGameObjectWithTag("game_data").GetComponent<GameData>();
         if (gameData != null)
@@ -62,6 +62,10 @@ public class Game : MonoBehaviour
 
     public void Setup()
     {
+
+        GameObject.Destroy(gameData);
+
+
         FillKnightPos();
         FillBarbarianPos();
         kingPos = new Vector2(5, 5);

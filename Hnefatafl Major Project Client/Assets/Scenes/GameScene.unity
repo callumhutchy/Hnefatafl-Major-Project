@@ -297,7 +297,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &478426196
 RectTransform:
   m_ObjectHideFlags: 0
@@ -570,7 +570,15 @@ MonoBehaviour:
   size: 11
   knightPos: []
   barbarianPos: []
+  kingPos: {x: 0, y: 0}
   selectedPiece: {fileID: 0}
+  isFirstPlayer: 1
+  isBarbarians: 0
+  Player1: 
+  Player2: 
+  gameData: {fileID: 0}
+  knightsTaken: 0
+  barbariansTaken: 0
 --- !u!4 &980075001
 Transform:
   m_ObjectHideFlags: 0
