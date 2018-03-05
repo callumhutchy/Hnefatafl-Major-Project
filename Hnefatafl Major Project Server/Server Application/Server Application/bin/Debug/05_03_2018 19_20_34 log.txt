@@ -1,0 +1,134 @@
+[05/03/2018 19:16:33]: Started Log Manager
+
+[05/03/2018 19:16:34]: Starting Server
+
+[05/03/2018 19:16:38]: Server started on port 7995
+
+[05/03/2018 19:16:38]: The local endpoint is :127.0.0.1:12000
+
+[05/03/2018 19:16:38]: Waiting for a connection...
+
+[05/03/2018 19:16:46]: Connection accepted from 127.0.0.1:63189
+
+[05/03/2018 19:16:46]: Received...
+
+[05/03/2018 19:16:46]:    at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, SocketError& errorCode)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer)
+   at Server_Application.MainWindow.ServerReply() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 176
+
+[05/03/2018 19:16:46]:    at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, SocketError& errorCode)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer)
+   at Server_Application.MainWindow.ServerReply() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 176
+
+[05/03/2018 19:16:46]:    at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, SocketError& errorCode)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer)
+   at Server_Application.MainWindow.ServerReply() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 176
+
+[05/03/2018 19:16:46]:    at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, SocketError& errorCode)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer)
+   at Server_Application.MainWindow.ServerReply() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 176
+
+[05/03/2018 19:16:47]:    at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, SocketError& errorCode)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer)
+   at Server_Application.MainWindow.ServerReply() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 176
+
+[05/03/2018 19:16:47]:    at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, SocketError& errorCode)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer)
+   at Server_Application.MainWindow.ServerReply() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 176
+
+[05/03/2018 19:16:47]:    at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, SocketError& errorCode)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer)
+   at Server_Application.MainWindow.ServerReply() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 176
+
+[05/03/2018 19:16:47]:    at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, SocketError& errorCode)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer)
+   at Server_Application.MainWindow.ServerReply() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 176
+
+[05/03/2018 19:16:47]:    at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, SocketError& errorCode)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer)
+   at Server_Application.MainWindow.ServerReply() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 176
+
+[05/03/2018 19:16:48]:    at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, SocketError& errorCode)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer)
+   at Server_Application.MainWindow.ServerReply() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 176
+
+[05/03/2018 19:16:49]:    at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, SocketError& errorCode)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer)
+   at Server_Application.MainWindow.ServerReply() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 176
+
+[05/03/2018 19:16:49]:    at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, SocketError& errorCode)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer)
+   at Server_Application.MainWindow.ServerReply() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 176
+
+[05/03/2018 19:16:50]:    at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, SocketError& errorCode)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer)
+   at Server_Application.MainWindow.ServerReply() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 176
+
+[05/03/2018 19:16:50]:    at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, SocketError& errorCode)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer)
+   at Server_Application.MainWindow.ServerReply() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 176
+
+[05/03/2018 19:16:50]:    at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, SocketError& errorCode)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer)
+   at Server_Application.MainWindow.ServerReply() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 176
+
+[05/03/2018 19:16:51]:    at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, SocketError& errorCode)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer)
+   at Server_Application.MainWindow.ServerReply() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 176
+
+[05/03/2018 19:16:51]:    at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, SocketError& errorCode)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer)
+   at Server_Application.MainWindow.ServerReply() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 176
+
+[05/03/2018 19:16:52]:    at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, SocketError& errorCode)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer)
+   at Server_Application.MainWindow.ServerReply() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 176
+
+[05/03/2018 19:16:53]:    at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, SocketError& errorCode)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer)
+   at Server_Application.MainWindow.ServerReply() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 176
+
+[05/03/2018 19:16:54]:    at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, SocketError& errorCode)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer)
+   at Server_Application.MainWindow.ServerReply() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 176
+
+[05/03/2018 19:16:55]:    at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, SocketError& errorCode)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer)
+   at Server_Application.MainWindow.ServerReply() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 176
+
+[05/03/2018 19:16:56]:    at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, SocketError& errorCode)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer)
+   at Server_Application.MainWindow.ServerReply() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 176
+
+[05/03/2018 19:16:56]:    at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, SocketError& errorCode)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer)
+   at Server_Application.MainWindow.ServerReply() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 176
+
+[05/03/2018 19:16:58]:    at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, SocketError& errorCode)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Net.Sockets.Socket.Send(Byte[] buffer)
+   at Server_Application.MainWindow.ServerReply() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 176
+
