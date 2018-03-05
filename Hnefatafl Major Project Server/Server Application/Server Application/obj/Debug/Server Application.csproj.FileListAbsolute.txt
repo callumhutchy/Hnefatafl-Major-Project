@@ -1,0 +1,15 @@
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\bin\Debug\Server Application.exe.config
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\bin\Debug\Server Application.exe
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\bin\Debug\Server Application.pdb
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\obj\Debug\Server Application.csprojResolveAssemblyReference.cache
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\obj\Debug\MainWindow.g.cs
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\obj\Debug\App.g.cs
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\obj\Debug\Server Application_MarkupCompile.cache
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\obj\Debug\Server Application_MarkupCompile.lref
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\obj\Debug\MainWindow.baml
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\obj\Debug\Server Application.g.resources
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\obj\Debug\Server_Application.Properties.Resources.resources
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\obj\Debug\Server Application.csproj.GenerateResource.Cache
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\obj\Debug\Server Application.csproj.CoreCompileInputs.cache
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\obj\Debug\Server Application.exe
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\obj\Debug\Server Application.pdb
