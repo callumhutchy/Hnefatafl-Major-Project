@@ -44,7 +44,6 @@ namespace Server_Application
             logManagementThread.Start();
             Log("Started Log Manager");
 
-            Log("Starting Server");
         }
 
         private void btnStartServer_Click(object sender, RoutedEventArgs e)
@@ -57,6 +56,7 @@ namespace Server_Application
 
                 serverStarted = true;
 
+                Log("Starting Server");
                 serverListenThread.Start();
                 serverReplyThread.Start();
                 serverLogicThread.Start();
@@ -94,6 +94,32 @@ namespace Server_Application
 
         }
 
+        public static void ReadCallback(IAsyncResult ar)
+        {
+            Message message;
+
+            StateObject state = (StateObject)ar.AsyncState;
+            Socket handler = state.workSocket;
+
+            int bytesRead = handler.EndReceive(ar);
+
+            if(bytesRead > 0)
+            {
+
+            }
+
+        }
+
+        public static void AcceptCallback(IAsyncResult ar)
+        {
+            Socket s = (Socket)ar.AsyncState;
+            Socket handler = s.EndAccept(ar);
+
+            StateObject state = new StateObject();
+            state.workSocket = handler;
+            handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);
+
+        }
 
         //Thread Methods
         private void LogManagement()
@@ -130,7 +156,6 @@ namespace Server_Application
                 Log("Server started on port 7995");
                 Log("The local endpoint is :" + listener.LocalEndpoint);
                 Log("Waiting for a connection...");
-
                 while (true)
                 {
                     Socket s = listener.AcceptSocket();
@@ -146,6 +171,10 @@ namespace Server_Application
                    
                     
                     RecieveQueue.Add(new Tuple<Message, Socket>(message,s));
+
+                    s.BeginAccept(new AsyncCallback(AcceptCallback), s);
+
+
                 }
                 
                 listener.Stop();
@@ -189,7 +218,6 @@ namespace Server_Application
                         Log(e.StackTrace);
                     }
 
-                    
 
                 }
             }

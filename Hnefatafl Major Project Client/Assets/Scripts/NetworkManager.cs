@@ -10,13 +10,13 @@ using System;
 public class NetworkManager : MonoBehaviour
 {
 
-    // Use this for initialization
+    TcpClient client = new TcpClient();
 
     void Awake()
     {
         try
         {
-            TcpClient client = new TcpClient();
+
             Debug.Log("Connecting...");
 
             client.Connect("127.0.0.1", 15500);
@@ -25,20 +25,15 @@ public class NetworkManager : MonoBehaviour
 
             Stream stm = client.GetStream();
 
-			Message transmission = new Message(MessageType.CONNECT, "Hey Server");
+            Message transmission = new Message(MessageType.CONNECT, "Hey Server");
 
             byte[] ba = transmission.Serialize();
             Debug.Log("Transmitting...");
 
             stm.Write(ba, 0, ba.Length);
 
-            byte[] bb = new byte[100];
-            stm.Read(bb, 0, 100);
-			Message message = Message.Deserialize(bb);
 
-            Debug.Log(message.type + " : " + message.message);
 
-            client.Close();
         }
         catch (Exception e)
         {
@@ -47,6 +42,27 @@ public class NetworkManager : MonoBehaviour
 
 
     }
+
+    void OnApplicationQuit()
+    {
+        try
+        {
+			Debug.Log("Disconnecting");
+            Stream stm = client.GetStream();
+            Message transmission = new Message(MessageType.DISCONNECT, "Bye");
+            byte[] b = transmission.Serialize();
+            stm.Write(b, 0, b.Length);
+            stm.Close();
+            client.Close();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e);
+        }
+
+    }
+
+
     void Start()
     {
 
@@ -55,6 +71,16 @@ public class NetworkManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        byte[] b = new byte[100];
+        Stream stm = client.GetStream();
+        int k = stm.Read(b, 0, 100);
+        if (k > 0)
+        {
+            Message message = Message.Deserialize(b);
+
+            Debug.Log(message.type + " : " + message.message);
+        }
+
 
     }
 }

@@ -14,6 +14,11 @@ namespace Server_Application
         public string message;
         public MessageType type;
 
+        public Message()
+        {
+
+        }
+
         public Message(MessageType t, string msg)
         {
             message = msg;
