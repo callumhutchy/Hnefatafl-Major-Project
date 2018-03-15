@@ -13,17 +13,6 @@ public class MainMenu : MonoBehaviour {
 	public GameObject MainMenuPanel;
 	public GameObject HotSeatMenuPanel;
 	
-
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
 	public void OnTwoPlayerGameClick(){
 		MainMenuPanel.SetActive(false);
 		HotSeatMenuPanel.SetActive(true);
@@ -33,10 +22,9 @@ public class MainMenu : MonoBehaviour {
 		SceneManager.LoadScene("MultiplayerLobby");
 	}
 
-	public void OnPlayGameClick(){
-
+	public void ExitGame(){
+		Application.Quit();
 	}
-
 
 
 }
