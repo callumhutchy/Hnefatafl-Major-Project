@@ -28,6 +28,8 @@ public class Game : MonoBehaviour
     public int knightsTaken = 0;
     public int barbariansTaken = 0;
 
+    public GameUI gameUI;
+
     // Use this for initialization
     void Start()
     {
@@ -253,6 +255,7 @@ public class Game : MonoBehaviour
             else if (isKing)
             {
                 Debug.Log("Barbarians win!!!");
+                gameUI.BarbariansWin();
             }
 
 

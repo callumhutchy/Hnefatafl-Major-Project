@@ -37,6 +37,10 @@ namespace Server_Application
 
         bool serverStarted = false;
 
+        Socket listener;
+        int port = 7995;
+        byte[] byteData = new byte[1024];
+
         public MainWindow()
         {
             InitializeComponent();
@@ -56,10 +60,19 @@ namespace Server_Application
 
                 serverStarted = true;
 
+                IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+                IPEndPoint localEP = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
+                listener = new Socket(localEP.Address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                listener.Bind(localEP);
+
+
                 Log("Starting Server");
                 serverListenThread.Start();
                 serverReplyThread.Start();
                 serverLogicThread.Start();
+
+               
+
             }
         }
 
@@ -94,8 +107,9 @@ namespace Server_Application
 
         }
 
-        public static void ReadCallback(IAsyncResult ar)
+        public void ReadCallback(IAsyncResult ar)
         {
+            Log("Received");
             Message message;
 
             StateObject state = (StateObject)ar.AsyncState;
@@ -110,14 +124,18 @@ namespace Server_Application
 
         }
 
-        public static void AcceptCallback(IAsyncResult ar)
+        public  void AcceptCallback(IAsyncResult ar)
         {
             Socket s = (Socket)ar.AsyncState;
-            Socket handler = s.EndAccept(ar);
-
-            StateObject state = new StateObject();
-            state.workSocket = handler;
-            handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);
+           
+            if(s != null)
+            {
+                Socket handler = listener.EndAccept(ar);
+                StateObject state = new StateObject();
+                state.workSocket = handler;
+                Log("Connection is not null");
+                handler.BeginReceive(state.buffer, 0, state.buffer.Length, 0, new AsyncCallback(ReadCallback), state);
+            }
 
         }
 
@@ -147,18 +165,20 @@ namespace Server_Application
         {
             try
             {
-                IPAddress ip = IPAddress.Parse("127.0.0.1");
 
-                TcpListener listener = new TcpListener(ip, 15500);
+                
 
-                listener.Start();
-
-                Log("Server started on port 7995");
-                Log("The local endpoint is :" + listener.LocalEndpoint);
+               // Log("Server started on port 7995");
+                //Log("The local endpoint is :" + ipEndpoint);
                 Log("Waiting for a connection...");
+
                 while (true)
                 {
-                    Socket s = listener.AcceptSocket();
+                    listener.Listen(100);
+                    listener.BeginAccept(new AsyncCallback(AcceptCallback), listener);
+
+
+                    /*
                     clients.Add(s);
 
                     Log("Connection accepted from " + s.RemoteEndPoint);
@@ -173,11 +193,11 @@ namespace Server_Application
                     RecieveQueue.Add(new Tuple<Message, Socket>(message,s));
 
                     s.BeginAccept(new AsyncCallback(AcceptCallback), s);
-
-
+                    
+                */
                 }
                 
-                listener.Stop();
+                //listener.Stop();
                 
             }
             catch (Exception e)

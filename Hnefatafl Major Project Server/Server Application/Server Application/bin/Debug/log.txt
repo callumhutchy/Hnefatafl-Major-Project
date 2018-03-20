@@ -1,16 +1,8 @@
-[06/03/2018 14:26:24]: Started Log Manager
+[16/03/2018 02:20:10]: Started Log Manager
 
-[06/03/2018 14:26:27]: Starting Server
+[16/03/2018 02:20:13]: Starting Server
 
-[06/03/2018 14:26:28]: Server started on port 7995
+[16/03/2018 02:20:13]: Waiting for a connection...
 
-[06/03/2018 14:26:28]: The local endpoint is :127.0.0.1:15500
-
-[06/03/2018 14:26:28]: Waiting for a connection...
-
-[06/03/2018 14:26:36]: Connection accepted from 127.0.0.1:55758
-
-[06/03/2018 14:26:36]: Received...
-
-[06/03/2018 14:26:36]: Sent Acknowledgement
+[16/03/2018 02:22:26]: Received
 

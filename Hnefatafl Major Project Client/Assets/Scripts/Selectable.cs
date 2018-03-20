@@ -16,6 +16,8 @@ public class Selectable : MonoBehaviour
 
     public GameObject movementTile;
 
+    
+
     public List<GameObject> selectableTiles = new List<GameObject>();
 
     // Use this for initialization
@@ -229,6 +231,8 @@ public class Selectable : MonoBehaviour
             gameController.kingPos = new Vector2(tran.position.x, tran.position.z);
             if(IsCorner((int)gameController.kingPos.x, (int)gameController.kingPos.y, 11) && !IsThrone((int)gameController.kingPos.x, (int)gameController.kingPos.y)){
                 Debug.Log("Knights Win");
+                gameController.gameUI.VikingsWin();
+
             }
         }
 

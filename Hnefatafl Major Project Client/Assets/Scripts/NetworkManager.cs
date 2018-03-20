@@ -19,7 +19,7 @@ public class NetworkManager : MonoBehaviour
 
             Debug.Log("Connecting...");
 
-            client.Connect("127.0.0.1", 15500);
+            client.Connect("127.0.0.1", 7995);
 
             Debug.Log("Connected");
 

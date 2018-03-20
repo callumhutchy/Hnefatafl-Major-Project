@@ -1,0 +1,7 @@
+[16/03/2018 02:07:04]: Started Log Manager
+
+[16/03/2018 02:07:08]: Starting Server
+
+[16/03/2018 02:07:08]: Error....   at System.Net.Sockets.Socket..ctor(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
+   at Server_Application.MainWindow.ServerListen() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 155
+
