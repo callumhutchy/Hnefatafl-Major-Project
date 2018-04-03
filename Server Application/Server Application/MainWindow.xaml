@@ -8,6 +8,8 @@
         Title="MainWindow" Height="350" Width="525">
     <Grid>
         <Button Content="Button" HorizontalAlignment="Left" Margin="375,61,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+        <Label x:Name="lblClients" Content="" HorizontalAlignment="Left" Margin="77,61,0,0" VerticalAlignment="Top" Width="191"/>
+        <Label x:Name="lblWaiting" Content="" HorizontalAlignment="Left" Margin="77,87,0,0" VerticalAlignment="Top" Width="191"/>
 
     </Grid>
 </Window>

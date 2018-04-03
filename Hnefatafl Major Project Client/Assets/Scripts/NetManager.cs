@@ -7,6 +7,7 @@ using System.Threading;
 using System.IO;
 using System;
 using System.Text;
+using UnityEngine.SceneManagement;
 public class NetManager : MonoBehaviour
 {
     private Socket clientSocket;
@@ -14,15 +15,25 @@ public class NetManager : MonoBehaviour
 
     private const int port = 7995;
 
-    private Guid myId;
-    private Guid gameId;
+    public Guid myId;
+
+	public Guid opponentId;
+    public Guid gameId;
+
+	public Guid clientId;
+
+
+	public bool areWeFirst;
+
+	private bool loadMuliplayerGame = false;
+	private bool whenGameLoaded = false;
 
 
     void Awake()
     {
-
+		GameObject.DontDestroyOnLoad(this);
         StartCoroutine(StopSpam());
-
+		clientId  = Guid.NewGuid();
         try
         {
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -54,7 +65,8 @@ public class NetManager : MonoBehaviour
             Debug.Log("Connecting");
 
 
-            byte[] data = Encoding.ASCII.GetBytes(new Message(MessageType.CONNECT, "can we connect").Serialize());
+			Debug.Log("Sending client id : " + clientId.ToString());
+            byte[] data = Encoding.ASCII.GetBytes(new Message(MessageType.CONNECT, clientId.ToString()).Serialize());
             Debug.Log("Began sending " + data.Length + " bytes");
             clientSocket.BeginSend(data, 0, data.Length, SocketFlags.None, new AsyncCallback(SendCallback), clientSocket);
 
@@ -82,13 +94,14 @@ public class NetManager : MonoBehaviour
                 }
 
                 string reply = Encoding.ASCII.GetString(buffer);
-
+                Debug.Log(reply);
+                //reply = StringCipher.Decrypt(reply);
                 //Logic goes here for response
 
                 Message msg = Message.Deserialize(reply);
                 Debug.Log(msg.type + " : " + msg.message);
 
-                if (!myId.Equals(msg.gameID))
+                if (!myId.Equals(msg.userId))
                 {
                     Debug.Log("Our id from the server doesn't match");
                 }
@@ -96,7 +109,7 @@ public class NetManager : MonoBehaviour
                 if (disconnect)
                 {
 					Debug.Log("Sending a leave message");
-                    Send(new Message(MessageType.DISCONNECT, "Can we leave", myId).Serialize(), clientSocket);
+                    Send(new Message(MessageType.DISCONNECT, "Can we leave", myId, clientId).Serialize(), clientSocket);
                     disconnect = false;
                 }
 
@@ -104,26 +117,39 @@ public class NetManager : MonoBehaviour
                 {
                     case MessageType.CONNECT:
 
-                        myId = msg.gameID;
+                        myId = msg.userId;
                         Debug.Log("We've connected and here is our id : " + myId);
-                        Send(new Message(MessageType.FIND_GAME, "Please find a game", myId).Serialize(), clientSocket);
+                        Send(new Message(MessageType.FIND_GAME, "Please find a game", myId,clientId).Serialize(), clientSocket);
 
                         break;
                     case MessageType.WAITING_FOR_PLAYER:
 						Debug.Log("We are waiting for another player");
-						Send(new Message(MessageType.WAITING_FOR_PLAYER, "Ok we will wait", myId).Serialize(), clientSocket);
+						System.Threading.Thread.Sleep(2000);
+						Send(new Message(MessageType.WAITING_FOR_PLAYER, "Ok we will wait", myId,clientId).Serialize(), clientSocket);
 						break;
 					
 					case MessageType.PLAYER_FOUND:
 						Debug.Log(msg.message);
-						Send(new Message(MessageType.GAME_SETUP, "We will head to game setup",myId).Serialize(), clientSocket);
-
-						//Scene move to multiplayer game;
-
+						Send(new Message(MessageType.GAME_SETUP, msg.message ,myId,clientId).Serialize(), clientSocket);
 
 						break;
 					
-					
+					case MessageType.GAME_SETUP:
+						
+						GameData gameData = GameData.Deserialise(msg.message);
+						Debug.Log(gameData.player1);
+						Debug.Log(gameData.player2);
+						Debug.Log(gameData.gameId);
+						Debug.Log(gameData.firstPlayer);
+						Debug.Log(gameData.piece1);
+						Debug.Log(gameData.piece2);
+
+
+						//Scene move to multiplayer game;
+						loadMuliplayerGame = true;
+						//Send(new Message(MessageType.IGNORE, "Waiting", myId,clientId).Serialize(), clientSocket);
+						
+						break;
 					
 					
 					
@@ -145,7 +171,7 @@ public class NetManager : MonoBehaviour
                                 break;
                             }
                         }
-							Send(new Message(MessageType.IGNORE, "Waiting", myId).Serialize(), clientSocket);
+							Send(new Message(MessageType.IGNORE, "Waiting", myId,clientId).Serialize(), clientSocket);
 						
                          break;
                 }
@@ -161,6 +187,13 @@ public class NetManager : MonoBehaviour
             }
         
     }
+
+	void Update(){
+		if(loadMuliplayerGame){
+			SceneManager.LoadScene("MultiplayerScene");
+		}
+		
+	}
     static bool stopSpam = true;
     IEnumerator StopSpam()
     {

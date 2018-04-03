@@ -11,7 +11,10 @@ namespace Server_Application
     {
         public string message;
         public MessageType type;
-        public Guid userId;
+        public bool hasId = false;
+        public bool clientMessage = false;
+        public Guid userId = Guid.Empty;
+        public Guid clientId;
 
         public Message(MessageType t, string msg)
         {
@@ -23,45 +26,48 @@ namespace Server_Application
         {
             message = msg;
             type = t;
+            hasId = true;
+            clientMessage = false;
             userId = id;
+        }
+
+        public Message(MessageType t, string msg, Guid uid, Guid cid)
+        {
+            message = msg;
+            type = t;
+            hasId = true;
+            clientMessage = true;
+            userId = uid;
+            clientId = cid;
         }
 
         public String Serialize()
         {
-            /*/
-            string output = "";
-            output += type.ToString() + "/";
-            output += message.ToString();
-
-            ASCIIEncoding asen = new ASCIIEncoding();
-            return asen.GetBytes(output);
-    */
-            return type.ToString() + "|" + message + "|" + userId + "|" + "<EOF>";
-
-
-
+            return type.ToString() + "|" + message + "|" +hasId.ToString() + "|" + clientMessage.ToString() +"|" + userId.ToString() + "|" + clientId.ToString()+ "|<EOF>"; 
         }
 
         public static Message Deserialize(string input)
         {
-            /*string inbound = Encoding.ASCII.GetString(serial);
-
-            string[] components = inbound.Split('/');
-            MessageType type = (MessageType)Enum.Parse(typeof(MessageType), components[0]);
-            string message = components[1];
-            return new Message(type, message);*/
+            Console.WriteLine(input);
             string[] splitString = input.Split('|');
             MessageType type = (MessageType)Enum.Parse(typeof(MessageType), splitString[0]);
             string message = splitString[1];
-            Guid id;
-            if (splitString[2] != null)
+            bool has = bool.Parse(splitString[2]);
+            bool clientMsg = bool.Parse(splitString[3]);
+            Guid uid;
+            if (has)
             {
-                id = new Guid(splitString[2]);
-                return new Message(type, message, id);
+                if (clientMsg)
+                {
+                    uid = new Guid(splitString[4]);
+                    Guid cid = new Guid(splitString[5]);
+                    return new Message(type, message, uid, cid);
+                }
+                uid = new Guid(splitString[4]);
+                return new Message(type, message, uid);
             }
             return new Message(type, message);
-
-
+            
         }
     }
     public enum MessageType

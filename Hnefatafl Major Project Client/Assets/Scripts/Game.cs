@@ -23,7 +23,7 @@ public class Game : MonoBehaviour
     public string Player1 = "";
     public string Player2 = "";
 
-    public GameData gameData = null;
+    public MenuData gameData = null;
 
     public int knightsTaken = 0;
     public int barbariansTaken = 0;
@@ -41,7 +41,7 @@ public class Game : MonoBehaviour
 
     public void Awake()
     {
-        gameData = GameObject.FindGameObjectWithTag("game_data").GetComponent<GameData>();
+        gameData = GameObject.FindGameObjectWithTag("game_data").GetComponent<MenuData>();
         if (gameData != null)
         {
             Player1 = gameData.Player1;

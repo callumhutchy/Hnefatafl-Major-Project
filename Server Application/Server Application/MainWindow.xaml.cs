@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 
 
 namespace Server_Application
@@ -29,16 +30,29 @@ namespace Server_Application
         }
 
 
-        private static byte[] buffer = new byte[1024];
+        private static byte[] buffer = new byte[2048];
         private static Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         private static List<ClientInfo> clientSockets = new List<ClientInfo>();
 
         private static List<GameData> gameList = new List<GameData>();
         private static List<Guid> waitingPlayers = new List<Guid>();
-
+        
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             SetupServer();
+            Thread uiUpdater = new Thread(UIUpdater);
+            uiUpdater.Start();
+        }
+
+        private void UIUpdater()
+        {
+            while (true)
+            {
+                this.Dispatcher.Invoke(() => {
+                    lblClients.Content = "Clients Connected: " + clientSockets.Count();
+                    lblWaiting.Content = "Waiting For Players: " + waitingPlayers.Count();
+                });
+            }
         }
 
         private void SetupServer()
@@ -52,51 +66,91 @@ namespace Server_Application
         private static void AcceptCallback(IAsyncResult ar)
         {
             Socket socket = serverSocket.EndAccept(ar);
-            clientSockets.Add(new ClientInfo(socket, Guid.NewGuid()));
+            
+            
             socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), socket);
             serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), null);
         }
+
+
 
         private static void ReceiveCallback(IAsyncResult ar)
         {
             Socket socket = (Socket)ar.AsyncState;
             int received = socket.EndReceive(ar);
+            Console.WriteLine(received);
             byte[] dataBuf = new byte[received];
             Array.Copy(buffer, dataBuf, received);
             string text = Encoding.ASCII.GetString(dataBuf);
-            Message message = Message.Deserialize(text);
+            
+            //text = StringCipher.Decrypt(text);
 
-            if(!message.userId.Equals(clientSockets.Find(x => x.connection == socket).userId))
+
+            Message message = Message.Deserialize(text);
+            Guid clientId = message.clientId;
+
+            if (clientSockets.Exists(x => x.clientId == clientId))
             {
-                Console.WriteLine("Those IDs do not match!!");
+                if (!message.userId.Equals(clientSockets.Find(x => x.clientId == message.clientId).userId))
+                {
+                    Console.WriteLine("Those IDs do not match!! " + message.userId + " : " + clientSockets.Find(x => x.clientId == clientId).userId);
+                }
             }
 
 
-            Console.WriteLine(message.type + " : " + message.message);
+
+            
 
             //Logic
 
             switch (message.type)
             {
                 case MessageType.CONNECT:
-                    
-                    Send(new Message(MessageType.CONNECT, "Welcome to the server", clientSockets.Find(x => x.connection == socket).userId).Serialize(), socket);
+                    Console.WriteLine(clientId);
+                    Guid cid = new Guid(message.message);
+                    clientSockets.Add(new ClientInfo(socket, Guid.NewGuid(), cid ));
+
+                    Send(new Message(MessageType.CONNECT, "Welcome to the server", clientSockets.Find(x => x.clientId == cid).userId).Serialize(), socket);
+
+                    Console.WriteLine(message.type + " : " + message.message);
+
                     break;
                 case MessageType.DISCONNECT:
-                    Send(new Message(MessageType.DISCONNECT, "You can leave", clientSockets.Find(x => x.connection == socket).userId).Serialize(), socket);
+                    Send(new Message(MessageType.DISCONNECT, "You can leave", clientSockets.Find(x => x.clientId == clientId).userId).Serialize(), socket);
                     clientSockets.RemoveAll(x => x.userId.Equals(message.userId));
                     break;
                 case MessageType.FIND_GAME:
                     waitingPlayers.Add(message.userId);
-                    Send(new Message(MessageType.WAITING_FOR_PLAYER, "Added you to the queue", clientSockets.Find(x => x.connection == socket).userId).Serialize(), socket);
+                    Console.WriteLine(message.type + " : " + message.message);
+                    Send(new Message(MessageType.WAITING_FOR_PLAYER, "Added you to the queue", clientSockets.Find(x => x.clientId == clientId).userId).Serialize(), socket);
                     break;
                 case MessageType.WAITING_FOR_PLAYER:
-                    if(waitingPlayers.Count < 2)
+
+                    if(waitingPlayers.Count < 2 && !(gameList.Exists(x => x.player1 == message.userId || gameList.Exists(y => y.player2 == message.userId))))
                     {
-                        Send(new Message(MessageType.WAITING_FOR_PLAYER, "No Players waiting", clientSockets.Find(x => x.connection == socket).userId).Serialize(), socket);
+                        Send(new Message(MessageType.WAITING_FOR_PLAYER, "No Players waiting", clientSockets.Find(x => x.clientId == clientId).userId).Serialize(), socket);
                     }
                     else
                     {
+                        if(gameList.Exists(x => x.player1 == message.userId || gameList.Exists(y => y.player2 == message.userId))){
+                            GameData gameD = gameList.Find(x => x.player1 == message.userId || gameList.Exists(y => y.player2 == message.userId));
+                            if(gameD.player1 == message.userId)
+                            {
+                                gameList[gameList.FindIndex(x => x.player1 == message.userId || gameList.Exists(y => y.player2 == message.userId))].p1Ready = true;
+                            }
+                            else
+                            {
+                                gameList[gameList.FindIndex(x => x.player1 == message.userId || gameList.Exists(y => y.player2 == message.userId))].p2Ready = true;
+
+                            }
+
+                            Send(new Message(MessageType.PLAYER_FOUND, gameD.gameId.ToString(), message.userId).Serialize(), socket);
+
+
+                        }
+
+
+
                         if (!clientSockets.Find(x => x.userId == message.userId).gameMatch)
                         {
                             Guid player1 = message.userId;
@@ -107,31 +161,63 @@ namespace Server_Application
                             clientSockets.Find(x => x.userId == player2).gameMatch = true;
                             clientSockets.Find(x => x.userId == player1).gameMatch = true;
 
-                            gameList.Add(new GameData(player1, player2));
+                            GameData gameD = GameData.CreateGameData(player1, player2);
 
-                            Send(new Message(MessageType.PLAYER_FOUND, "We have found a game against : " + player2.ToString(), player1).Serialize(), socket);
+                            gameD.p1Ready = true;
+
+                            gameList.Add(gameD);
+                            
+                            Send(new Message(MessageType.PLAYER_FOUND, gameD.gameId.ToString() , message.userId).Serialize(), socket);
 
                         }
-                        else
+                        else if(clientSockets.Find(x => x.userId == message.userId).gameMatch)
                         {
-                            GameData game = gameList.Find(x => x.player1 == message.userId || x.player2 == message.userId);
+                            GameData gameD = gameList.Find(x => x.player1 == message.userId || x.player2 == message.userId);
                             Guid opponent;
-                            if(game.player1 == message.userId) {
-                                opponent = game.player2;
+                            bool p1 = false;
+                            if(gameD.player1 == message.userId) {
+                                opponent = gameD.player2;
+                                p1 = true;
                             }
                             else
                             {
-                                opponent = game.player1;
+                                opponent = gameD.player1;
                             }
 
-                            Send(new Message(MessageType.PLAYER_FOUND, "We have found a game against : " + opponent.ToString(), message.userId).Serialize(), socket);
+                            if (p1)
+                            {
+                                gameList[gameList.FindIndex(x => x.player1 == message.userId)].p1Ready = true;
+                            }
+                            else
+                            {
+                                gameList[gameList.FindIndex(x => x.player2 == message.userId)].p2Ready = true;
+                            }
+
+                            Send(new Message(MessageType.PLAYER_FOUND, gameD.gameId.ToString(), message.userId).Serialize(), socket);
                         }
+
+
+
                     }
 
                     break;
                 case MessageType.GAME_SETUP:
-                    Send(new Message(MessageType.IGNORE, "Ignore", clientSockets.Find(x => x.connection == socket).userId).Serialize(), socket);
 
+                    Guid gid = new Guid(message.message);
+                    
+                    GameData game = gameList.Find(x => x.gameId == gid);
+                    Console.WriteLine(game.p1Ready + " " + game.p2Ready);
+                    if(game.p1Ready && game.p2Ready)
+                    {
+                        game.SetPieces();
+                        game.SetFirst();
+                        Send(new Message(MessageType.GAME_SETUP, game.Serialize(), clientSockets.Find(x => x.clientId == clientId).userId).Serialize(), socket);
+                    }
+                    else
+                    {
+                        Send(new Message(MessageType.PLAYER_FOUND, game.gameId.ToString(), message.userId).Serialize(), socket);
+                    }
+                    
                     break;
                 case MessageType.FIRST_TURN:
 
@@ -143,7 +229,7 @@ namespace Server_Application
 
                     break;
                 default:
-                    Send(new Message(MessageType.IGNORE, "Ignore", clientSockets.Find(x => x.connection == socket).userId).Serialize(), socket);
+                    Send(new Message(MessageType.IGNORE, "Ignore", clientSockets.Find(x => x.clientId == clientId).userId).Serialize(), socket);
                     break;
             }
             socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), socket);

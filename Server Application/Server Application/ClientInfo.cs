@@ -11,12 +11,14 @@ namespace Server_Application
     {
         public Socket connection;
         public Guid userId;
+        public Guid clientId;
         public bool gameMatch = false;
 
-        public ClientInfo(Socket con, Guid id)
+        public ClientInfo(Socket con, Guid id, Guid cid)
         {
             connection = con;
             userId = id;
+            clientId = cid;
         }
     }
 }
