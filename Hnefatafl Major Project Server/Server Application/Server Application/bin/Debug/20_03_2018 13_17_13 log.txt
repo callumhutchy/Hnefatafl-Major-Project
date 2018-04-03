@@ -1,0 +1,20 @@
+[20/03/2018 13:10:17]: Started Log Manager
+
+[20/03/2018 13:10:20]: Starting Server
+
+[20/03/2018 13:10:20]: Waiting for a connection...
+
+[20/03/2018 13:10:56]: Connection is not null
+
+[20/03/2018 13:10:56]: Received
+
+[20/03/2018 13:10:56]: Read 23 bytes from socket. 
+ Data : CONNECT/Hey Server<EOF>
+
+[20/03/2018 13:13:32]: Connection is not null
+
+[20/03/2018 13:13:33]: Received
+
+[20/03/2018 13:13:33]: Read 23 bytes from socket. 
+ Data : CONNECT/Hey Server<EOF>
+

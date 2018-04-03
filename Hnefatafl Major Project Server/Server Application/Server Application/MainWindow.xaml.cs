@@ -25,20 +25,22 @@ namespace Server_Application
     /// </summary>
     public partial class MainWindow : Window
     {
-        private List<string> logQueue = new List<string>();
+        private static List<string> logQueue = new List<string>();
 
-        private List<Tuple<Message, Socket>> SendQueue = new List<Tuple<Message, Socket>>();
+        private static List<Tuple<Message, Socket>> SendQueue = new List<Tuple<Message, Socket>>();
 
-        private List<Tuple<Message, Socket>> RecieveQueue =  new List<Tuple<Message, Socket>>();
+        private static List<Tuple<Message, Socket>> RecieveQueue = new List<Tuple<Message, Socket>>();
 
-        private List<Socket> clients = new List<Socket>();
+
+
+
+        private static List<SocketIdentifier> clients = new List<SocketIdentifier>();
 
         string logPath = "log.txt";
 
         bool serverStarted = false;
-
-        Socket listener;
-        int port = 7995;
+        
+        static int port = 7995;
         byte[] byteData = new byte[1024];
 
         public MainWindow()
@@ -52,45 +54,221 @@ namespace Server_Application
 
         private void btnStartServer_Click(object sender, RoutedEventArgs e)
         {
+
             if (!serverStarted)
             {
                 Thread serverListenThread = new Thread(new ThreadStart(ServerListen));
-                Thread serverReplyThread = new Thread(new ThreadStart(ServerReply));
-                Thread serverLogicThread = new Thread(new ThreadStart(ServerLogic));
-
+              
                 serverStarted = true;
-
-                IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-                IPEndPoint localEP = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
-                listener = new Socket(localEP.Address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                listener.Bind(localEP);
-
 
                 Log("Starting Server");
                 serverListenThread.Start();
-                serverReplyThread.Start();
-                serverLogicThread.Start();
-
                
-
             }
         }
 
-      
-       
-        private void Log(string msg)
+        public static ManualResetEvent allDone = new ManualResetEvent(false);
+
+
+        public static void StartListening()
+        {
+            // Data buffer for incoming data.  
+            byte[] bytes = new Byte[1024];
+
+            // Establish the local endpoint for the socket.  
+            // The DNS name of the computer  
+            // running the listener is "host.contoso.com".  
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+            IPAddress ipAddress = ipHostInfo.AddressList[0];
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, port);
+
+            // Create a TCP/IP socket.  
+            Socket listener = new Socket(ipAddress.AddressFamily,
+                SocketType.Stream, ProtocolType.Tcp);
+
+            // Bind the socket to the local endpoint and listen for incoming connections.  
+            try
+            {
+                listener.Bind(localEndPoint);
+                listener.Listen(100);
+
+                while (true)
+                {
+                    // Set the event to nonsignaled state.  
+                    allDone.Reset();
+
+                    // Start an asynchronous socket to listen for connections.  
+                    Log("Waiting for a connection...");
+                    listener.BeginAccept(
+                        new AsyncCallback(AcceptCallback),
+                        listener);
+
+                    // Wait until a connection is made before continuing.  
+                    allDone.WaitOne();
+                }
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+
+            Console.WriteLine("\nPress ENTER to continue...");
+            Console.Read();
+
+        }
+
+        public static Message ServerLogic(Message msg, Socket client)
+        {
+            MessageType type = msg.type;
+            String message = msg.message;
+            Guid id = msg.gameID;
+
+
+            Message response = new Message(MessageType.IGNORE, "Keep alive");
+
+            switch (type)
+            {
+
+                case MessageType.CONNECT:
+                    Guid newID = Guid.NewGuid();
+                    clients.Add(new SocketIdentifier(client, newID));
+                    response = new Message(MessageType.CONNECT, "Welcome to the server", newID);
+                    Log("Client connected, number of clients online: " + clients.Count());
+                    break;
+                case MessageType.DISCONNECT:
+                    Log(message + " " + id.ToString());
+                    clients.RemoveAll(x => x.userID == id);
+                    Send(client, new Message(MessageType.DISCONNECT, "You can go").Serialize());
+
+                    break;
+                case MessageType.WAITING_FOR_PLAYER:
+                    break;
+                case MessageType.PLAYER_FOUND:
+                    break;
+                case MessageType.FIND_GAME:
+
+                    break;
+
+                default:
+                    response = new Message(MessageType.DISCONNECT, "Error");
+                    break;
+            }
+
+            return response;
+
+
+        }
+
+        public static void AcceptCallback(IAsyncResult ar)
+        {
+            // Signal the main thread to continue.  
+            allDone.Set();
+
+            // Get the socket that handles the client request.  
+            Socket listener = (Socket)ar.AsyncState;
+            Socket handler = listener.EndAccept(ar);
+            
+            
+
+
+            // Create the state object.  
+            StateObject state = new StateObject();
+            state.workSocket = handler;
+            handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
+                new AsyncCallback(ReadCallback), state);
+        }
+
+        public static void ReadCallback(IAsyncResult ar)
+        {
+            String content = String.Empty;
+
+            // Retrieve the state object and the handler socket  
+            // from the asynchronous state object.  
+            StateObject state = (StateObject)ar.AsyncState;
+            Socket handler = state.workSocket;
+
+            // Read data from the client socket.   
+            int bytesRead = handler.EndReceive(ar);
+
+            if (bytesRead > 0)
+            {
+                // There  might be more data, so store the data received so far.  
+                state.sb.Append(Encoding.ASCII.GetString(
+                    state.buffer, 0, bytesRead));
+
+                // Check for end-of-file tag. If it is not there, read   
+                // more data.  
+                content = state.sb.ToString();
+                if (content.IndexOf("<EOF>") > -1)
+                {
+                    // All the data has been read from the   
+                    // client. Display it on the console.  
+                    //Log("Read "+ content.Length+" bytes from socket. \n Data : " +   content);
+
+                    Message msg = Message.Deserialize(content);
+                    Log(msg.type.ToString() + ": " + msg.message);
+
+                    
+                    // Echo the data back to the client.  
+                    Message response = ServerLogic(msg, handler);
+
+
+                    Send(handler, response.Serialize());
+                }
+                else
+                {
+                    // Not all data received. Get more.  
+                    handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
+                    new AsyncCallback(ReadCallback), state);
+                }
+            }
+        }
+
+        private static void Send(Socket handler, String data)
+        {
+            // Convert the string data to byte data using ASCII encoding.  
+            byte[] byteData = Encoding.ASCII.GetBytes(data);
+
+            // Begin sending the data to the remote device.  
+            handler.BeginSend(byteData, 0, byteData.Length, 0,
+                new AsyncCallback(SendCallback), handler);
+        }
+
+        private static void SendCallback(IAsyncResult ar)
+        {
+            try
+            {
+                // Retrieve the socket from the state object.  
+                Socket handler = (Socket)ar.AsyncState;
+
+                // Complete sending the data to the remote device.  
+                int bytesSent = handler.EndSend(ar);
+                Log("Sent " + bytesSent + " bytes to client.");
+
+                handler.Shutdown(SocketShutdown.Both);
+                handler.Close();
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+        }
+
+        private static void Log(string msg)
         {
             logQueue.Add(msg);
         }
 
-
         private void LogManager()
         {
-            if(logQueue.Count > 0)
+            if (logQueue.Count > 0)
             {
                 string message = "[" + DateTime.Now + "]: " + logQueue[0] + "\n";
                 logQueue.RemoveAt(0);
-                this.Dispatcher.Invoke(() => {
+                this.Dispatcher.Invoke(() =>
+                {
                     txtLog.Text += message;
                     txtLog.ScrollToEnd();
 
@@ -102,51 +280,19 @@ namespace Server_Application
                     sw.WriteLine(message);
                 }
             }
-            
-            
 
-        }
 
-        public void ReadCallback(IAsyncResult ar)
-        {
-            Log("Received");
-            Message message;
-
-            StateObject state = (StateObject)ar.AsyncState;
-            Socket handler = state.workSocket;
-
-            int bytesRead = handler.EndReceive(ar);
-
-            if(bytesRead > 0)
-            {
-
-            }
-
-        }
-
-        public  void AcceptCallback(IAsyncResult ar)
-        {
-            Socket s = (Socket)ar.AsyncState;
-           
-            if(s != null)
-            {
-                Socket handler = listener.EndAccept(ar);
-                StateObject state = new StateObject();
-                state.workSocket = handler;
-                Log("Connection is not null");
-                handler.BeginReceive(state.buffer, 0, state.buffer.Length, 0, new AsyncCallback(ReadCallback), state);
-            }
 
         }
 
         //Thread Methods
         private void LogManagement()
         {
-            
+
             if (File.Exists(logPath))
             {
                 string newPath = DateTime.Now.ToString().Replace("/", "_").Replace(":", "_") + " log.txt";
-                File.Move(logPath, newPath );
+                File.Move(logPath, newPath);
             }
             else
             {
@@ -158,120 +304,21 @@ namespace Server_Application
             {
                 LogManager();
             }
-           
+
         }
 
         private void ServerListen()
         {
-            try
-            {
-
-                
-
-               // Log("Server started on port 7995");
-                //Log("The local endpoint is :" + ipEndpoint);
-                Log("Waiting for a connection...");
-
-                while (true)
-                {
-                    listener.Listen(100);
-                    listener.BeginAccept(new AsyncCallback(AcceptCallback), listener);
-
-
-                    /*
-                    clients.Add(s);
-
-                    Log("Connection accepted from " + s.RemoteEndPoint);
-
-                    
-                    byte[] b = new byte[100];
-                    s.Receive(b);
-                    Log("Received...");
-                    Message message = Message.Deserialize(b);
-                   
-                    
-                    RecieveQueue.Add(new Tuple<Message, Socket>(message,s));
-
-                    s.BeginAccept(new AsyncCallback(AcceptCallback), s);
-                    
-                */
-                }
-                
-                //listener.Stop();
-                
-            }
-            catch (Exception e)
-            {
-                Log("Error...." + e.StackTrace);
-            }
-            
-        }
-
-        private void ServerReply()
-        {
+            //StartListening();
             while (true)
             {
-                if(SendQueue.Count > 0)
-                {
-                    try
-                    {
-                        Message message = SendQueue[0].Item1;
-                        Socket client = SendQueue[0].Item2;
-                        
-                        byte[] serializedMessage;
-                        var formatter = new BinaryFormatter();
-                        using (var stream = new MemoryStream())
-                        {
-                            formatter.Serialize(stream, message);
-                            serializedMessage = message.Serialize();
-                        }
-
-                        client.Send(serializedMessage);
-
-                        Log("Sent Acknowledgement");
-
-                        SendQueue.RemoveAt(0);
-                        client.Close();
-                    }
-                    catch(Exception e)
-                    {
-                        Log(e.StackTrace);
-                    }
-
-
-                }
+                lblClients.Content = "Clients: " + clients.Count();
             }
         }
-    
-        private void ServerLogic()
+
+        private void btnSendMessage_Click(object sender, RoutedEventArgs e)
         {
-            while (true)
-            {
-                this.Dispatcher.Invoke(() =>
-                {
-                    lblClients.Content = "Clients: " + clients.Count;
-                });
-
-
-                if(RecieveQueue.Count > 0)
-                {
-
-                    try
-                    {
-                        string message = RecieveQueue[0].Item1.message;
-                        Socket client = RecieveQueue[0].Item2;
-                        
-                        SendQueue.Add(new Tuple<Message, Socket>(new Message(MessageType.SERVER_REPLY, "Your message has been received"), client));
-                        RecieveQueue.RemoveAt(0);
-                    }
-                    catch(Exception e)
-                    {
-                        Log(e.StackTrace);
-                    }
-                   
-                }
-            }
+           
         }
-
     }
 }

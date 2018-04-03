@@ -1,0 +1,14 @@
+[02/04/2018 15:46:44]: Started Log Manager
+
+[02/04/2018 15:46:47]: Starting Server
+
+[02/04/2018 15:46:47]: Waiting for a connection...
+
+[02/04/2018 15:47:03]: Waiting for a connection...
+
+[02/04/2018 15:47:03]: CONNECT: Hey I want to connect
+
+[02/04/2018 15:47:03]: Client connected, number of clients online: 1
+
+[02/04/2018 15:47:03]: Sent 72 bytes to client.
+

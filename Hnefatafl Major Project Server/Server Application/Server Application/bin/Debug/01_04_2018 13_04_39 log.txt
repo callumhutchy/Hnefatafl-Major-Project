@@ -1,0 +1,6 @@
+[01/04/2018 12:41:52]: Started Log Manager
+
+[01/04/2018 12:41:56]: Starting Server
+
+[01/04/2018 12:41:56]: Waiting for a connection...
+

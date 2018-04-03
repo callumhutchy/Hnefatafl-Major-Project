@@ -1,0 +1,13 @@
+[01/04/2018 13:04:39]: Started Log Manager
+
+[01/04/2018 13:04:42]: Starting Server
+
+[01/04/2018 13:04:42]: Waiting for a connection...
+
+[01/04/2018 13:04:44]: Waiting for a connection...
+
+[01/04/2018 13:04:44]: Read 19 bytes from socket. 
+ Data : This is a test<EOF>
+
+[01/04/2018 13:04:44]: Sent 19 bytes to client.
+
