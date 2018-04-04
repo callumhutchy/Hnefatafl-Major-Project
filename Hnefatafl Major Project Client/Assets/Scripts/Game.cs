@@ -30,17 +30,21 @@ public class Game : MonoBehaviour
 
     public GameUI gameUI;
 
-    // Use this for initialization
-    void Start()
-    {
-
-       // Setup();
-
-
-    }
+    public Material kingMat, knightMat, barbarianMat, kingSelMat, knightSelMat, barbarianSelMat;
+    public GameObject piece;
 
     public void Awake()
     {
+
+        kingMat = (Material)Resources.Load("Materials/KingMat");
+        knightMat = (Material)Resources.Load("Materials/KnightMat");
+        barbarianMat = (Material)Resources.Load("Materials/BarbarianMat");
+
+        kingSelMat = (Material)Resources.Load("Materials/KingSelectedMat");
+        knightSelMat = (Material)Resources.Load("Materials/KnightSelectedMat");
+        barbarianSelMat = (Material)Resources.Load("Materials/BarbarianSelectedMat");
+
+        piece = (GameObject)Resources.Load("Prefabs/GamePiece");
         gameData = GameObject.FindGameObjectWithTag("game_data").GetComponent<MenuData>();
         if (gameData != null)
         {
@@ -130,19 +134,33 @@ public class Game : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
+
+    List<Vector2> removalList = new List<Vector2>( );
 
     public void CheckForTaken()
     {
+        removalList = new List<Vector2>();
+
+
+
         if (isBarbarians)
         {
+
             foreach (Vector2 knight in knightPos)
             {
                 takenAlgo("barbarian", knight, false);
+
+
             }
 
             takenAlgo("barbarian", kingPos, true);
+            foreach(Vector2 piece in removalList){
+                knightPos.RemoveAt(knightPos.FindIndex(x => x.x == piece.x && x.y == piece.y));
+                
+            }
+
 
         }
         else
@@ -150,11 +168,17 @@ public class Game : MonoBehaviour
             foreach (Vector2 barbarian in barbarianPos)
             {
                 takenAlgo("knight", barbarian, false);
+
+
+            }
+            foreach(Vector2 piece in removalList){
+               barbarianPos.RemoveAt(barbarianPos.FindIndex(x => x.x == piece.x && x.y == piece.y));
+                
             }
         }
     }
 
-    protected void takenAlgo(string side, Vector2 piece, bool isKing)
+    public void takenAlgo(string side, Vector2 piece, bool isKing)
     {
         //Debug.Log(piece.x + " " + piece.y);
 
@@ -246,10 +270,16 @@ public class Game : MonoBehaviour
 
             if (side == "barbarian" && !isKing)
             {
+
+                //knightPos.RemoveAt(knightPos.FindIndex(x => x.x == piece.x && x.y == piece.y));
+                removalList.Add(new Vector2(piece.x, piece.y));
+                
                 knightsTaken++;
             }
             else if (side == "knight" && !isKing)
             {
+                //barbarianPos.RemoveAt(barbarianPos.FindIndex(x => x.x == piece.x && x.y == piece.y));
+                removalList.Add(new Vector2(piece.x, piece.y));
                 barbariansTaken++;
             }
             else if (isKing)
@@ -264,17 +294,8 @@ public class Game : MonoBehaviour
 
     }
 
-    protected void SetupPieces()
+    public void SetupPieces()
     {
-        Material kingMat = (Material)Resources.Load("Materials/KingMat");
-        Material knightMat = (Material)Resources.Load("Materials/KnightMat");
-        Material barbarianMat = (Material)Resources.Load("Materials/BarbarianMat");
-
-        Material kingSelMat = (Material)Resources.Load("Materials/KingSelectedMat");
-        Material knightSelMat = (Material)Resources.Load("Materials/KnightSelectedMat");
-        Material barbarianSelMat = (Material)Resources.Load("Materials/BarbarianSelectedMat");
-
-        GameObject piece = (GameObject)Resources.Load("Prefabs/GamePiece");
 
         GameObject king = GameObject.Instantiate(piece);
         king.GetComponent<Renderer>().material = kingMat;

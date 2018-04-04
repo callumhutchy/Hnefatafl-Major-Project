@@ -72,7 +72,7 @@ namespace Server_Application
             if(piece1 == Team.NONE && piece2 == Team.NONE)
             {
                 Random rand = new Random();
-                int index = rand.Next(0, 1);
+                int index = rand.Next(0, 2);
                 if(index == 0)
                 {
                     piece1 = Team.BARBARIAN;
@@ -91,7 +91,7 @@ namespace Server_Application
             if(firstPlayer == Guid.Empty)
             {
                 Random rand = new Random();
-                int index = rand.Next(0, 1);
+                int index = rand.Next(0, 2);
                 if(index == 0)
                 {
                     firstPlayer = player1;

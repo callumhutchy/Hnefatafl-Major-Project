@@ -58,19 +58,27 @@ public class Selectable : MonoBehaviour
 
     void OnMouseOver()
     {
-        
+
 
         if (netGame)
         {
-            MultiplayerGame game = (MultiplayerGame) gameController;
-            if (Input.GetMouseButtonDown(0) && game.netMan.ourTeam.ToString().ToLower().Equals(this.gameObject.tag) )
+            Debug.Log("Mouing over");
+            MultiplayerGame game = (MultiplayerGame)gameController;
+            if (game.ourTurn)
             {
+                Debug.Log("Its our turn");
+                if (Input.GetMouseButtonDown(0) && ((game.netMan.ourTeam.ToString().ToLower() == "barbarian" && this.gameObject.tag.Equals("barbarian")) || (game.netMan.ourTeam.ToString().ToLower() != "barbarian" && !this.gameObject.tag.Equals("barbarian"))))
+                {
+                    Debug.Log("Clickity");
+                    gameController.selectedPiece = this.transform.gameObject;
+                    GetComponent<Renderer>().material = selectedMat;
+                    FindPossibleMoves();
 
-                gameController.selectedPiece = this.transform.gameObject;
-                GetComponent<Renderer>().material = selectedMat;
-                FindPossibleMoves();
-
+                }
+            }else{
+                Debug.Log("Hmmm");
             }
+
         }
         else
         {
@@ -240,20 +248,27 @@ public class Selectable : MonoBehaviour
 
     public void MoveToLocation(Transform tran)
     {
+        Debug.Log("Size of the lists before moving " + gameController.knightPos.Count + ":" + gameController.barbarianPos.Count);
         foreach (GameObject go in selectableTiles)
         {
             DestroyObject(go);
         }
+
         gameController.board.board[(int)this.transform.position.x, (int)this.transform.position.z] = null;
-        this.transform.position = new Vector3(tran.position.x, 0.5f, tran.position.z);
+
+
+        
+        
+        
         if (this.gameObject.tag.Equals("barbarian"))
         {
-            gameController.barbarianPos.Remove(new Vector2(this.transform.position.x, this.transform.position.y));
+            gameController.barbarianPos.RemoveAt(gameController.barbarianPos.FindIndex(x => x.x == this.transform.position.x && x.y == this.transform.position.z));
             gameController.barbarianPos.Add(new Vector2(tran.position.x, tran.position.z));
         }
         else if (this.gameObject.tag.Equals("knight"))
         {
-            gameController.knightPos.Remove(new Vector2(this.transform.position.x, this.transform.position.y));
+           
+            gameController.knightPos.RemoveAt(gameController.knightPos.FindIndex(x => x.x == this.transform.position.x && x.y == this.transform.position.z));
             gameController.knightPos.Add(new Vector2(tran.position.x, tran.position.z));
         }
         else if (this.gameObject.tag.Equals("king"))
@@ -267,14 +282,25 @@ public class Selectable : MonoBehaviour
             }
         }
 
+        this.transform.position = new Vector3( tran.position.x, 0.5f, tran.position.z);
+
         myPosition = new Vector2(tran.position.x, tran.position.z);
 
         gameController.board.board[(int)myPosition.x, (int)myPosition.y] = this.gameObject;
 
         SetNormal();
+        
         gameController.CheckForTaken();
-        gameController.NextTurn();
 
+
+        if(netGame){
+            Debug.Log("Moved piece");
+            MultiplayerGame game = (MultiplayerGame) gameController;
+            game.NextTurn();
+        }else{
+            gameController.NextTurn();
+        }
+        Debug.Log("Size of the lists after moving " + gameController.knightPos.Count + ":" + gameController.barbarianPos.Count);
     }
 
     void GenerateTile(int posX, int posY)

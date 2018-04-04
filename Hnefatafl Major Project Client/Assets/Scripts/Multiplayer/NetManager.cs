@@ -118,8 +118,6 @@ public class NetManager : MonoBehaviour
             }
 
             string reply = Encoding.ASCII.GetString(buffer);
-            Debug.Log(reply);
-            //reply = StringCipher.Decrypt(reply);
             //Logic goes here for response
 
             Message msg = Message.Deserialize(reply);
@@ -205,6 +203,7 @@ public class NetManager : MonoBehaviour
                     System.Threading.Thread.Sleep(2000);
                     if (nextTurn)
                     {
+                        Debug.Log("Sending turn over");
                         BoardState board = new BoardState(multiplayerGame.knightPos, multiplayerGame.barbarianPos, multiplayerGame.kingPos);
                         Send(new Message(MessageType.NEXT_TURN, board.Serialize(), myId, clientId).Serialize(), clientSocket);
                         nextTurn = false;
@@ -221,12 +220,16 @@ public class NetManager : MonoBehaviour
 
                     break;
                 case MessageType.YOUR_TURN:
-
+                    Debug.Log("Our turn");
                     BoardState boardS = BoardState.Deserialise(msg.message);
+                    multiplayerGame.knightPos = new List<Vector2>();
                     multiplayerGame.knightPos = boardS.knightsPos;
+                    multiplayerGame.barbarianPos = new List<Vector2>();
                     multiplayerGame.barbarianPos = boardS.barbariansPos;
+                    Debug.Log(multiplayerGame.knightPos.Count + " : " + multiplayerGame.barbarianPos.Count);
                     multiplayerGame.kingPos = boardS.kingPos;
                     multiplayerGame.ourTurn = true;
+                    movePieces = true;
 
                     Send(new Message(MessageType.TAKING_OUR_TURN, "We are just taking our turn", myId, clientId).Serialize(), clientSocket);
 
@@ -257,11 +260,17 @@ public class NetManager : MonoBehaviour
 
     }
 
+    static bool movePieces = false;
+
     void Update()
     {
         if (loadMuliplayerGame)
         {
             SceneManager.LoadScene("MultiplayerScene");
+        }
+        if(movePieces){
+            multiplayerGame.MovePieces();
+            movePieces= false;
         }
 
     }

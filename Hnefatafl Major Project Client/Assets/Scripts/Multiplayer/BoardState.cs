@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BoardState : MonoBehaviour {
+public class BoardState{
 
 	public List<Vector2> knightsPos;
 	public List<Vector2> barbariansPos;
@@ -19,6 +19,7 @@ public class BoardState : MonoBehaviour {
 		string knights = "";
 		string barbarians = "";
 		string king = "";
+		Debug.Log("Serialising : " + knightsPos.Count + "/" + barbariansPos.Count);
 		foreach(Vector2 k in knightsPos){
 			knights += k.x + "/" + k.y + "@";
 		}
