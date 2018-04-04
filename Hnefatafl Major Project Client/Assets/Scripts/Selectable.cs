@@ -7,6 +7,8 @@ public class Selectable : MonoBehaviour
 
     public Game gameController;
 
+    public MultiplayerGame multiGameController;
+
     public Piece piece;
 
     public Vector2 myPosition;
@@ -16,14 +18,24 @@ public class Selectable : MonoBehaviour
 
     public GameObject movementTile;
 
-    
+    bool netGame = false;
 
     public List<GameObject> selectableTiles = new List<GameObject>();
 
     // Use this for initialization
     void Start()
     {
-        gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>();
+        if (GameObject.FindGameObjectWithTag("net_man"))
+        {
+            gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<MultiplayerGame>();
+            netGame = true;
+        }
+        else
+        {
+            gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>();
+        }
+
+
         movementTile = (GameObject)Resources.Load("Prefabs/MovementPlace");
     }
 
@@ -46,14 +58,32 @@ public class Selectable : MonoBehaviour
 
     void OnMouseOver()
     {
-        if (Input.GetMouseButtonDown(0) && ((gameController.isBarbarians && this.gameObject.tag.Equals("barbarian")) || (!gameController.isBarbarians && !this.gameObject.tag.Equals("barbarian"))))
+        
+
+        if (netGame)
         {
+            MultiplayerGame game = (MultiplayerGame) gameController;
+            if (Input.GetMouseButtonDown(0) && game.netMan.ourTeam.ToString().ToLower().Equals(this.gameObject.tag) )
+            {
 
-            gameController.selectedPiece = this.transform.gameObject;
-            GetComponent<Renderer>().material = selectedMat;
-            FindPossibleMoves();
+                gameController.selectedPiece = this.transform.gameObject;
+                GetComponent<Renderer>().material = selectedMat;
+                FindPossibleMoves();
 
+            }
         }
+        else
+        {
+            if (Input.GetMouseButtonDown(0) && ((gameController.isBarbarians && this.gameObject.tag.Equals("barbarian")) || (!gameController.isBarbarians && !this.gameObject.tag.Equals("barbarian"))))
+            {
+
+                gameController.selectedPiece = this.transform.gameObject;
+                GetComponent<Renderer>().material = selectedMat;
+                FindPossibleMoves();
+
+            }
+        }
+
     }
 
     void FindPossibleMoves()
@@ -229,7 +259,8 @@ public class Selectable : MonoBehaviour
         else if (this.gameObject.tag.Equals("king"))
         {
             gameController.kingPos = new Vector2(tran.position.x, tran.position.z);
-            if(IsCorner((int)gameController.kingPos.x, (int)gameController.kingPos.y, 11) && !IsThrone((int)gameController.kingPos.x, (int)gameController.kingPos.y)){
+            if (IsCorner((int)gameController.kingPos.x, (int)gameController.kingPos.y, 11) && !IsThrone((int)gameController.kingPos.x, (int)gameController.kingPos.y))
+            {
                 Debug.Log("Knights Win");
                 gameController.gameUI.VikingsWin();
 
@@ -272,15 +303,19 @@ public class Selectable : MonoBehaviour
         else if (x == width - 1 && y == width - 1)
         {
             return true;
-        }else if(x == 5 && y == 5){
+        }
+        else if (x == 5 && y == 5)
+        {
             return true;
         }
-       
+
         return false;
     }
 
-    bool IsThrone(int x, int y){
-        if(x == 5 && y == 5){
+    bool IsThrone(int x, int y)
+    {
+        if (x == 5 && y == 5)
+        {
             return true;
         }
         return false;

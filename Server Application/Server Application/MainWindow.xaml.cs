@@ -96,11 +96,7 @@ namespace Server_Application
                     Console.WriteLine("Those IDs do not match!! " + message.userId + " : " + clientSockets.Find(x => x.clientId == clientId).userId);
                 }
             }
-
-
-
             
-
             //Logic
 
             switch (message.type)
@@ -145,12 +141,9 @@ namespace Server_Application
                             }
 
                             Send(new Message(MessageType.PLAYER_FOUND, gameD.gameId.ToString(), message.userId).Serialize(), socket);
-
-
+                            
                         }
-
-
-
+                        
                         if (!clientSockets.Find(x => x.userId == message.userId).gameMatch)
                         {
                             Guid player1 = message.userId;
@@ -219,9 +212,43 @@ namespace Server_Application
                     }
                     
                     break;
-                case MessageType.FIRST_TURN:
+
+                case MessageType.TAKING_OUR_TURN:
+
+                    Send(new Message(MessageType.TAKING_OUR_TURN, "Ok keep going", message.userId).Serialize(), socket);
+                    
+                    break;
+                case MessageType.WAITING_FOR_OUR_TURN:
+                    GameData gd = gameList.Find(x => x.player1 == message.userId || x.player2 == message.userId);
+                    if(gd.turn == message.userId)
+                    {
+                        Send(new Message(MessageType.YOUR_TURN, gd.boardState, message.userId).Serialize(), socket);
+                    }
+                    else
+                    {
+                        Send(new Message(MessageType.WAITING_FOR_OUR_TURN, "Ok we're still waiting for the other player", message.userId).Serialize(), socket);
+
+                    }
 
                     break;
+                case MessageType.NEXT_TURN:
+
+                    GameData gd1 = gameList.Find(x => x.player1 == message.userId || x.player2 == message.userId);
+                    if(gd1.player1 == message.userId)
+                    {
+                        gameList.Find(x => x.player1 == message.userId).turn = gd1.player2;
+                    }
+                    else
+                    {
+                        gameList.Find(x => x.player2 == message.userId).turn = gd1.player1;
+                    }
+
+                    gameList.Find(x => x.gameId == gd1.gameId).boardState = message.message;
+
+                    Send(new Message(MessageType.WAITING_FOR_OUR_TURN, "Start waiting for your turn", message.userId).Serialize(), socket);
+
+                    break;
+
                 case MessageType.YOUR_TURN:
 
                     break;

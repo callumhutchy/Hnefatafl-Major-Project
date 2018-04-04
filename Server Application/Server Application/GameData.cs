@@ -17,6 +17,8 @@ namespace Server_Application
         public Team piece1 = Team.NONE;
         public Team piece2 = Team.NONE;
         public Guid firstPlayer = Guid.Empty;
+        public Guid turn = Guid.Empty;
+        public string boardState;
 
         private GameData (Guid p1, Guid p2, Guid g1)
         {
@@ -30,7 +32,7 @@ namespace Server_Application
             return new GameData(p1, p2, Guid.NewGuid());
         }
 
-        private GameData(Guid g1, Guid p1, Guid p2, bool p1r, bool p2r, Team tm1, Team tm2, Guid first)
+        private GameData(Guid g1, Guid p1, Guid p2, bool p1r, bool p2r, Team tm1, Team tm2, Guid first, Guid tur, string board)
         {
             player1 = p1;
             player2 = p2;
@@ -40,10 +42,13 @@ namespace Server_Application
             piece1 = tm1;
             piece2 = tm2;
             firstPlayer = first;
+            turn = first;
+            boardState = board;
+
         }
         public String Serialize()
         {
-            return gameId.ToString() + ":" + player1.ToString() + ":" + player2.ToString() + ":" + p1Ready.ToString() + ":" + p2Ready.ToString() + ":" + piece1.ToString() + ":" +piece2.ToString() + ":" + firstPlayer.ToString();
+            return gameId.ToString() + ":" + player1.ToString() + ":" + player2.ToString() + ":" + p1Ready.ToString() + ":" + p2Ready.ToString() + ":" + piece1.ToString() + ":" + piece2.ToString() + ":" + firstPlayer.ToString() + ":" + turn.ToString() + ":" + boardState;
         }
 
         public static GameData Deserialise(string input)
@@ -57,7 +62,9 @@ namespace Server_Application
             Team tm1 = (Team)Enum.Parse(typeof(Team), splitString[5]);
             Team tm2 = (Team)Enum.Parse(typeof(Team), splitString[6]);
             Guid first = new Guid(splitString[7]);
-            return new GameData(gID, p1, p2, p1R, p2R, tm1,tm2, first);
+            Guid trn = new Guid(splitString[8]);
+            string board = splitString[9];
+            return new GameData(gID, p1, p2, p1R, p2R, tm1, tm2, first, trn, board);
         }
 
         public  void SetPieces()
@@ -68,13 +75,13 @@ namespace Server_Application
                 int index = rand.Next(0, 1);
                 if(index == 0)
                 {
-                    piece1 = Team.BARBARIANS;
-                    piece2 = Team.VIKINGS;
+                    piece1 = Team.BARBARIAN;
+                    piece2 = Team.VIKING;
                 }
                 else
                 {
-                    piece1 = Team.VIKINGS;
-                    piece2 = Team.BARBARIANS;
+                    piece1 = Team.VIKING;
+                    piece2 = Team.BARBARIAN;
                 }
             }
         }
@@ -98,10 +105,10 @@ namespace Server_Application
 
     }
 
-    enum Team
+    public enum Team
     {
-        VIKINGS,
-        BARBARIANS,
+        VIKING,
+        BARBARIAN,
         NONE
     }
 

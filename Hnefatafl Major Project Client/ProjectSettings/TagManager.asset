@@ -11,6 +11,7 @@ TagManager:
   - knight
   - king
   - game_data
+  - net_man
   layers:
   - Default
   - TransparentFX

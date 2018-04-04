@@ -83,7 +83,10 @@ namespace Server_Application
         IGNORE,
         FIND_GAME,
         GAME_SETUP,
-        FIRST_TURN
+        FIRST_TURN,
+        WAITING_FOR_OUR_TURN,
+        TAKING_OUR_TURN,
+        NEXT_TURN
 
     }
 

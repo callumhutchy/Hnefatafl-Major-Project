@@ -76,7 +76,7 @@ public class Game : MonoBehaviour
         SetupPieces();
     }
 
-    void FillKnightPos()
+    protected void FillKnightPos()
     {
         knightPos.Add(new Vector2(5, 3));
         knightPos.Add(new Vector2(4, 4));
@@ -93,7 +93,7 @@ public class Game : MonoBehaviour
 
     }
 
-    void FillBarbarianPos()
+    protected void FillBarbarianPos()
     {
         barbarianPos.Add(new Vector2(3, 0));
         barbarianPos.Add(new Vector2(4, 0));
@@ -154,7 +154,7 @@ public class Game : MonoBehaviour
         }
     }
 
-    void takenAlgo(string side, Vector2 piece, bool isKing)
+    protected void takenAlgo(string side, Vector2 piece, bool isKing)
     {
         //Debug.Log(piece.x + " " + piece.y);
 
@@ -264,7 +264,7 @@ public class Game : MonoBehaviour
 
     }
 
-    void SetupPieces()
+    protected void SetupPieces()
     {
         Material kingMat = (Material)Resources.Load("Materials/KingMat");
         Material knightMat = (Material)Resources.Load("Materials/KnightMat");

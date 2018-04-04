@@ -34,22 +34,26 @@ public class CameraMovement : MonoBehaviour
 
 
     public void OnLeftDown()
-    {
+    {   
+        Debug.Log("Down");
         spinLeft = true;
     }
 
     public void OnLeftUp()
-    {
+    {   
+        Debug.Log("Up");
         spinLeft = false;
     }
 
     public void OnRightDown()
     {
+        Debug.Log("Down");
         spinRight = true;
     }
 
     public void OnRightUp()
     {
+        Debug.Log("Up");
         spinRight = false;
     }
 
