@@ -1,8 +1,0 @@
-[16/03/2018 02:10:22]: Started Log Manager
-
-[16/03/2018 02:10:24]: Starting Server
-
-[16/03/2018 02:10:24]: Error....   at System.Net.Sockets.Socket.DoBeginReceiveFrom(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, EndPoint endPointSnapshot, SocketAddress socketAddress, OverlappedAsyncResult asyncResult)
-   at System.Net.Sockets.Socket.BeginReceiveFrom(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags, EndPoint& remoteEP, AsyncCallback callback, Object state)
-   at Server_Application.MainWindow.ServerListen() in C:\Users\callu\Documents\Hnefatafl-Major-Project\Hnefatafl Major Project Server\Server Application\Server Application\MainWindow.xaml.cs:line 163
-

@@ -1,2 +1,0 @@
-[16/03/2018 02:14:01]: Started Log Manager
-

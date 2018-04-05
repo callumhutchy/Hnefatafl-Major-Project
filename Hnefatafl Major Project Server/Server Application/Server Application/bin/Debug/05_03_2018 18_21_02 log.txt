@@ -1,4 +1,0 @@
-[05/03/2018 18:20:24]: Started Log Manager
-
-[05/03/2018 18:20:25]: Starting Server
-
