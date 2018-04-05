@@ -12,7 +12,19 @@ public class GameUI : MonoBehaviour {
 	public GameObject winUI;
 	public TMP_Text winText;
 
-	public void ExitButton(){
+    public NetManager netMan;
+    public bool netGame = false;
+
+    private void Awake()
+    {
+        netMan = GameObject.FindGameObjectWithTag("net_man").GetComponent<NetManager>();
+        if (netMan != null)
+        {
+            netGame = true;
+        }
+    }
+
+    public void ExitButton(){
 		gameUI.SetActive(false);
 		exitUI.SetActive(true);
 	}
@@ -20,6 +32,11 @@ public class GameUI : MonoBehaviour {
 	public void ExitYesButton(){
 		GameObject gameData = GameObject.FindGameObjectWithTag("game_data");
 		GameObject.Destroy(gameData);
+        if (netGame)
+        {
+            netMan.quit = true;
+        }
+        
 		SceneManager.LoadScene("Main Menu");
 
 	}

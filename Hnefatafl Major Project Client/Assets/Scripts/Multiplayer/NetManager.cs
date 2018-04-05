@@ -8,6 +8,8 @@ using System.IO;
 using System;
 using System.Text;
 using UnityEngine.SceneManagement;
+using TMPro;
+
 public class NetManager : MonoBehaviour
 {
     private Socket clientSocket;
@@ -34,8 +36,15 @@ public class NetManager : MonoBehaviour
 
     public MultiplayerGame multiplayerGame;
 
+    public GameObject waitingIcon;
+    public TMP_Text waitingText;
+    public static bool waiting = true;
+
+    public bool quit = false;
+
     void Awake()
     {
+        
         GameObject.DontDestroyOnLoad(this);
         clientId = Guid.NewGuid();
         try
@@ -44,19 +53,22 @@ public class NetManager : MonoBehaviour
 
             //Connect to server
             try{
-                
-                IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("192.168.1.75"), port);
 
+                IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("192.168.1.75"), port);
+                //IPEndPoint endPoint = new IPEndPoint(Dns.GetHostEntry("ec2-52-56-171-201.eu-west-2.compute.amazonaws.com").AddressList[0], port);
             Debug.Log("Attempting to connect");
             //Begin connection
             clientSocket.BeginConnect(endPoint, ConnectCallback, null);
 
-            }catch(Exception){
+            }catch(Exception ex){
+                /*
                 IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
 
             Debug.Log("Attempting to connect");
             //Begin connection
             clientSocket.BeginConnect(endPoint, ConnectCallback, null);
+            */
+                Debug.Log(ex);
             }
         }
         catch (SocketException ex)
@@ -66,6 +78,8 @@ public class NetManager : MonoBehaviour
 
 
     }
+
+    public static string waitingString;
 
     void Start()
     {
@@ -92,16 +106,26 @@ public class NetManager : MonoBehaviour
 
     Thread receiveData;
 
+    void Log(string text)
+    {
+        Debug.Log(text);
+        if (waiting)
+        {
+            waitingString = text;
+        }
+        
+    }
+
     //Start the callback loop
     void ConnectCallback(IAsyncResult ar)
     {
         try
         {
             buffer = new byte[clientSocket.ReceiveBufferSize];
-            Debug.Log("Connecting");
+            Log("Connecting");
 
 
-            Debug.Log("Sending client id : " + clientId.ToString());
+            Log("Sending client id : " + clientId.ToString());
             Send(new Message(MessageType.CONNECT, clientId.ToString()).Serialize(), clientSocket);
 
             clientSocket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, ReceiveCallback, null);
@@ -134,12 +158,12 @@ public class NetManager : MonoBehaviour
 
             if (!myId.Equals(msg.userId))
             {
-                Debug.Log("Our id from the server doesn't match");
+                Log("Our id from the server doesn't match");
             }
 
             if (disconnect)
             {
-                Debug.Log("Sending a leave message");
+                Log("Sending a leave message");
                 Send(new Message(MessageType.DISCONNECT, "Can we leave", myId, clientId).Serialize(), clientSocket);
                 disconnect = false;
             }
@@ -149,18 +173,18 @@ public class NetManager : MonoBehaviour
                 case MessageType.CONNECT:
 
                     myId = msg.userId;
-                    Debug.Log("We've connected and here is our id : " + myId);
+                    Log("We've connected and here is our id : " + myId);
                     Send(new Message(MessageType.FIND_GAME, "Please find a game", myId, clientId).Serialize(), clientSocket);
 
                     break;
                 case MessageType.WAITING_FOR_PLAYER:
-                    Debug.Log("We are waiting for another player");
+                    Log("We are waiting for another player");
                     System.Threading.Thread.Sleep(2000);
                     Send(new Message(MessageType.WAITING_FOR_PLAYER, "Ok we will wait", myId, clientId).Serialize(), clientSocket);
                     break;
 
                 case MessageType.PLAYER_FOUND:
-                    Debug.Log(msg.message);
+                    Log("Opponent found");
                     Send(new Message(MessageType.GAME_SETUP, msg.message, myId, clientId).Serialize(), clientSocket);
 
                     break;
@@ -197,6 +221,7 @@ public class NetManager : MonoBehaviour
                         //Wasting time
                         
                     }
+                    waiting = false;
                     if (areWeFirst)
                     {
                         Send(new Message(MessageType.TAKING_OUR_TURN, "We are just taking our turn", myId, clientId).Serialize(), clientSocket);
@@ -210,26 +235,38 @@ public class NetManager : MonoBehaviour
                     break;
                 case MessageType.TAKING_OUR_TURN:
                     System.Threading.Thread.Sleep(2000);
-                    if (nextTurn)
+                    if (quit)
                     {
-                        Debug.Log("Sending turn over");
-                        BoardState board = new BoardState(multiplayerGame.knightPos, multiplayerGame.barbarianPos, multiplayerGame.kingPos);
-                        Send(new Message(MessageType.NEXT_TURN, board.Serialize(), myId, clientId).Serialize(), clientSocket);
-                        nextTurn = false;
+                        Send(new Message(MessageType.QUIT, "We are quitting", myId, clientId).Serialize(), clientSocket);
                     }
                     else
                     {
-                        Send(new Message(MessageType.TAKING_OUR_TURN, "We are just taking our turn", myId, clientId).Serialize(), clientSocket);
+                        if (nextTurn)
+                        {
+                            Log("Sending turn over");
+                            BoardState board = new BoardState(multiplayerGame.knightPos, multiplayerGame.barbarianPos, multiplayerGame.kingPos);
+                            Send(new Message(MessageType.NEXT_TURN, board.Serialize(), myId, clientId).Serialize(), clientSocket);
+                            nextTurn = false;
+                        }
+                        else
+                        {
+                            Send(new Message(MessageType.TAKING_OUR_TURN, "We are just taking our turn", myId, clientId).Serialize(), clientSocket);
+                        }
                     }
-
                     break;
                 case MessageType.WAITING_FOR_OUR_TURN:
                    System.Threading.Thread.Sleep(2000);
-                    Send(new Message(MessageType.WAITING_FOR_OUR_TURN, "We are waiting for our turn", myId, clientId).Serialize(), clientSocket);
-
+                    if (quit)
+                    {
+                        Send(new Message(MessageType.QUIT, "We are quitting", myId, clientId).Serialize(), clientSocket);
+                    }
+                    else
+                    {
+                        Send(new Message(MessageType.WAITING_FOR_OUR_TURN, "We are waiting for our turn", myId, clientId).Serialize(), clientSocket);
+                    }
                     break;
                 case MessageType.YOUR_TURN:
-                    Debug.Log("Our turn");
+                    Log("Our turn");
                     BoardState boardS = BoardState.Deserialise(msg.message);
                     multiplayerGame.knightPos = new List<Vector2>();
                     multiplayerGame.knightPos = boardS.knightsPos;
@@ -244,7 +281,7 @@ public class NetManager : MonoBehaviour
 
                     break;
                 case MessageType.DISCONNECT:
-                    Debug.Log("We can disconnect");
+                    Log("We can disconnect");
                     exit = true;
                     break;
 
@@ -286,8 +323,21 @@ public class NetManager : MonoBehaviour
         if(loadMenu){
             SceneManager.LoadScene("Main Menu");
         }
-
+        if (waiting)
+        {
+            waitingText.text = waitingString;
+        }
+        
     }
+
+    private void FixedUpdate()
+    {
+        if (waiting)
+        {
+            waitingIcon.transform.Rotate(waitingIcon.transform.rotation.x, waitingIcon.transform.rotation.y, waitingIcon.transform.rotation.z - 5);
+        }
+    }
+
     static bool sceneLoaded = false;
     IEnumerator WaitForLoad()
     {

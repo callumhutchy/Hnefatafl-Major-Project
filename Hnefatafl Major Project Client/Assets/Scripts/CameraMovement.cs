@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public class CameraMovement : MonoBehaviour
 {
@@ -15,9 +17,18 @@ public class CameraMovement : MonoBehaviour
     void Start()
     {
         throne = GameObject.FindGameObjectWithTag("throne");
+        zoomSlider.minValue = minFov;
+        zoomSlider.maxValue = maxFov;
+        zoomSlider.value = Camera.main.fieldOfView;
     }
 
-   
+    float minFov = 15f;
+    float maxFov = 90f;
+    float scrollSensitivty = 10f;
+
+    public Slider zoomSlider;
+
+
     void Update()
     {
         if (spinRight && !spinLeft)
@@ -30,6 +41,16 @@ public class CameraMovement : MonoBehaviour
             transform.RotateAround(throne.transform.position, throne.transform.up, rotationSpeed * Time.deltaTime);
 
         }
+
+        float fov = Camera.main.fieldOfView;
+        fov -= Input.GetAxis("Mouse ScrollWheel") * scrollSensitivty;
+        fov = Mathf.Clamp(fov, minFov, maxFov);
+
+        fov = zoomSlider.value;
+
+        Camera.main.fieldOfView = fov;
+
+
     }
 
 

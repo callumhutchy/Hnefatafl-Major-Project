@@ -12,19 +12,39 @@ public class MainMenu : MonoBehaviour {
 	
 	public GameObject MainMenuPanel;
 	public GameObject HotSeatMenuPanel;
-	
-	public void OnTwoPlayerGameClick(){
-		MainMenuPanel.SetActive(false);
+
+    public AudioSource audioSource;
+    public AudioClip audioClip;
+
+    private void Awake()
+    {
+        audioSource = GameObject.FindGameObjectWithTag("audio_man").GetComponent<AudioSource>();
+    }
+
+    void PlayButtonSound()
+    {
+        audioSource.clip = audioClip;
+        audioSource.Play();
+    }
+
+    public void OnTwoPlayerGameClick(){
+        PlayButtonSound();
+        MainMenuPanel.SetActive(false);
 		HotSeatMenuPanel.SetActive(true);
+        
 	}
 
 	public void OnMultiplayerGameClick(){
-		SceneManager.LoadScene("MultiplayerLobby");
-	}
+        PlayButtonSound();
+        SceneManager.LoadScene("MultiplayerLobby");
+        
+    }
 
 	public void ExitGame(){
-		Application.Quit();
-	}
+        PlayButtonSound();
+        Application.Quit();
+        
+    }
 
 
 }

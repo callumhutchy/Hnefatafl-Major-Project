@@ -84,6 +84,7 @@ public enum MessageType
     WAITING_FOR_OUR_TURN,
     TAKING_OUR_TURN,
     NEXT_TURN,
-    OPPONENT_DISCONNECT
+    OPPONENT_DISCONNECT,
+    QUIT
 
 }

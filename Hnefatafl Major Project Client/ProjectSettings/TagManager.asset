@@ -12,6 +12,10 @@ TagManager:
   - king
   - game_data
   - net_man
+  - audio_man
+  - turn_label
+  - vikings_taken
+  - barbarians_taken
   layers:
   - Default
   - TransparentFX

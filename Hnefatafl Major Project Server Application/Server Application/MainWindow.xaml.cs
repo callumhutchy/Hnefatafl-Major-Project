@@ -15,7 +15,8 @@ using System.Windows.Shapes;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Server_Application
 {
@@ -28,7 +29,7 @@ namespace Server_Application
         {
             InitializeComponent();
         }
-
+        private static List<string> logQueue = new List<string>();
 
         private static byte[] buffer = new byte[2048];
         private static Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -42,22 +43,35 @@ namespace Server_Application
             SetupServer();
             Thread uiUpdater = new Thread(UIUpdater);
             uiUpdater.Start();
+            Thread logManagementThread = new Thread(new ThreadStart(LogManagement));
+            logManagementThread.Start();
+            Log("Started Log Manager");
         }
+
+       
 
         private void UIUpdater()
         {
             while (true)
             {
-                this.Dispatcher.Invoke(() => {
-                    lblClients.Content = "Clients Connected: " + clientSockets.Count();
-                    lblWaiting.Content = "Waiting For Players: " + waitingPlayers.Count();
-                });
+                try
+                {
+                    this.Dispatcher.Invoke(() => {
+                        lblClients.Content = "Clients Connected: " + clientSockets.Count();
+                        lblWaiting.Content = "Waiting For Players: " + waitingPlayers.Count();
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Log(ex.ToString());
+                }
+                
             }
         }
 
         private void SetupServer()
         {
-            Console.WriteLine("Setting up server...");
+            Log("Setting up server...");
             serverSocket.Bind(new IPEndPoint(IPAddress.Any, 7995));
             serverSocket.Listen(5);
             serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), null);
@@ -74,17 +88,22 @@ namespace Server_Application
 
 
 
+
+
         private static void ReceiveCallback(IAsyncResult ar)
         {
             Socket socket = (Socket)ar.AsyncState;
             int received = socket.EndReceive(ar);
-            Console.WriteLine(received);
+            Log(received.ToString());
             byte[] dataBuf = new byte[received];
             Array.Copy(buffer, dataBuf, received);
             string text = Encoding.ASCII.GetString(dataBuf);
             
             //text = StringCipher.Decrypt(text);
-
+            if(text == "")
+            {
+                return;
+            }
 
             Message message = Message.Deserialize(text);
             Guid clientId = message.clientId;
@@ -93,7 +112,7 @@ namespace Server_Application
             {
                 if (!message.userId.Equals(clientSockets.Find(x => x.clientId == message.clientId).userId))
                 {
-                    Console.WriteLine("Those IDs do not match!! " + message.userId + " : " + clientSockets.Find(x => x.clientId == clientId).userId);
+                    Log("Those IDs do not match!! " + message.userId + " : " + clientSockets.Find(x => x.clientId == clientId).userId);
                 }
             }
 
@@ -104,13 +123,13 @@ namespace Server_Application
             switch (message.type)
             {
                 case MessageType.CONNECT:
-                    Console.WriteLine(clientId);
+                    Log(clientId.ToString());
                     Guid cid = new Guid(message.message);
                     clientSockets.Add(new ClientInfo(socket, Guid.NewGuid(), cid ));
 
                     Send(new Message(MessageType.CONNECT, "Welcome to the server", clientSockets.Find(x => x.clientId == cid).userId).Serialize(), socket);
 
-                    Console.WriteLine(message.type + " : " + message.message);
+                    Log(message.type + " : " + message.message);
 
                     break;
                 case MessageType.DISCONNECT:
@@ -128,9 +147,22 @@ namespace Server_Application
 
                     clientSockets.RemoveAll(x => x.userId.Equals(message.userId));
                     break;
+                case MessageType.QUIT:
+                    if (gameList.Exists(x => x.player1 == message.userId || x.player2 == message.userId))
+                    {
+                        gameList.Find(x => x.player1 == message.userId || x.player2 == message.userId).disconnect = true;
+                    }
+
+                    if (waitingPlayers.Exists(x => x == message.userId))
+                    {
+                        waitingPlayers.RemoveAt(waitingPlayers.FindIndex(x => x == message.userId));
+                    }
+
+                    clientSockets.RemoveAll(x => x.userId.Equals(message.userId));
+                    break;
                 case MessageType.FIND_GAME:
                     waitingPlayers.Add(message.userId);
-                    Console.WriteLine(message.type + " : " + message.message);
+                    Log(message.type + " : " + message.message);
                     Send(new Message(MessageType.WAITING_FOR_PLAYER, "Added you to the queue", clientSockets.Find(x => x.clientId == clientId).userId).Serialize(), socket);
                     break;
                 case MessageType.WAITING_FOR_PLAYER:
@@ -246,6 +278,7 @@ namespace Server_Application
                     if (gd.disconnect)
                     {
                         Send(new Message(MessageType.OPPONENT_DISCONNECT, "Your opponent has dced", message.userId).Serialize(), socket);
+                        clientSockets.RemoveAll(x => x.userId.Equals(message.userId));
                     }
                     else
                     {
@@ -301,6 +334,61 @@ namespace Server_Application
         {
             Socket socket = (Socket)ar.AsyncState;
             socket.EndSend(ar);
+        }
+
+        private static void Log(string msg)
+        {
+            logQueue.Add(msg);
+        }
+
+        private static string logPath = "log.txt";
+
+        private void LogManager()
+        {
+            if(logQueue.Count > 0)
+            {
+                string message = "[" + DateTime.Now + "]: " + logQueue[0] + "\n";
+                logQueue.RemoveAt(0);
+                try
+                {
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        txtLog.Text += message;
+                        txtLog.ScrollToEnd();
+                    });
+                }
+                catch (Exception)
+                {
+
+                }
+                
+
+                using (StreamWriter sw = File.AppendText(logPath))
+                {
+                    sw.WriteLine();
+                }
+
+
+            }
+        }
+
+        private void LogManagement()
+        {
+            if (File.Exists(logPath))
+            {
+                string newPath = DateTime.Now.ToString().Replace("/", "_").Replace(":", "_") + "log.txt";
+                File.Move(logPath, newPath);
+            }
+            else
+            {
+                StreamWriter sw = File.CreateText(logPath);
+                sw.Close();
+            }
+
+            while (true)
+            {
+                LogManager();
+            }
         }
 
     }

@@ -7,6 +7,9 @@ using TMPro;
 
 public class MenuData : MonoBehaviour {
 
+    public AudioSource audioSource;
+    public AudioClip audioClip;
+
 	public Team Player1;
 	public Team Player2;
 
@@ -24,7 +27,13 @@ public class MenuData : MonoBehaviour {
 	public bool p2v = false;
 	public bool p2b = false;
 
-	public void OnClickPlayer1Viking(){
+    private void Awake()
+    {
+        audioSource = GameObject.FindGameObjectWithTag("audio_man").GetComponent<AudioSource>();
+    }
+
+    public void OnClickPlayer1Viking(){
+        PlayButtonSound();
         if (!p1v)
         {
             p1v = true;
@@ -49,7 +58,14 @@ public class MenuData : MonoBehaviour {
         }
 	}
 
+    void PlayButtonSound()
+    {
+        audioSource.clip = audioClip;
+        audioSource.Play();
+    }
+
 	public void OnClickPlayer1Barbarian(){
+        PlayButtonSound();
         if (!p1b)
         {
 
@@ -73,9 +89,11 @@ public class MenuData : MonoBehaviour {
             player2Viking.GetComponent<Image>().sprite = orangeButton;
             player2Barbarian.GetComponent<Image>().sprite = greyButton;
         }
+        
     }
 
 	public void OnClickPlayer2Viking(){
+        PlayButtonSound();
         if (!p2v)
         {
             
@@ -104,6 +122,7 @@ public class MenuData : MonoBehaviour {
 
 
 	public void OnClickPlayer2Barbarian(){
+        PlayButtonSound();
         if (!p2b)
         {
             p1v = true;
@@ -129,19 +148,12 @@ public class MenuData : MonoBehaviour {
     }
 
 	
-
-	// Use this for initialization
-	void Start () {
-		
-	}
 	
-	// Update is called once per frame
-	void Update () {
-	}
 
 	public void OnPlayClick(){
 		bool play = false;
-		if(p1v != p2v && p1b != p2b){
+        PlayButtonSound();
+        if (p1v != p2v && p1b != p2b){
 			if(p1v && p2b){
 				Player1 = Team.VIKING;
 				Player2 = Team.BARBARIAN;
@@ -158,6 +170,7 @@ public class MenuData : MonoBehaviour {
 			DontDestroyOnLoad(this);
 			SceneManager.LoadScene("GameScene");
 		}
+
 	}
 
 }

@@ -55,7 +55,8 @@ public class BoardState{
 			string[] pos = b.Split('/');
 			bPos.Add(new Vector2(float.Parse(pos[0]), float.Parse(pos[1])));
 		}
-		
+
+        
 		return new BoardState(kPos, bPos, new Vector2(float.Parse(kingPos[0]), float.Parse(kingPos[1])));
 
 

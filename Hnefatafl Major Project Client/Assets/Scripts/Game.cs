@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class Game : MonoBehaviour
 {
@@ -33,8 +35,23 @@ public class Game : MonoBehaviour
     public Material kingMat, knightMat, barbarianMat, kingSelMat, knightSelMat, barbarianSelMat;
     public GameObject piece;
 
+
+    public TMP_Text turnlabel;
+    public TMP_Text vikingsTakenLabel;
+    public TMP_Text barbariansTakenLabel;
+
+
+    public void Start()
+    {
+        turnlabel = GameObject.FindGameObjectWithTag("turn_label").GetComponent<TMP_Text>();
+        vikingsTakenLabel = GameObject.FindGameObjectWithTag("vikings_taken").GetComponent<TMP_Text>();
+        barbariansTakenLabel = GameObject.FindGameObjectWithTag("barbarians_taken").GetComponent<TMP_Text>();
+    }
+
     public void Awake()
     {
+
+        
 
         kingMat = (Material)Resources.Load("Materials/KingMat");
         knightMat = (Material)Resources.Load("Materials/KnightMat");
@@ -122,8 +139,7 @@ public class Game : MonoBehaviour
         barbarianPos.Add(new Vector2(6, 10));
         barbarianPos.Add(new Vector2(7, 10));
     }
-
-
+    
     public void NextTurn()
     {
         isBarbarians = !isBarbarians;
@@ -132,7 +148,20 @@ public class Game : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        knightsTaken = 12 - knightPos.Count;
+        barbariansTaken = 24 - barbarianPos.Count;
 
+        if (isBarbarians)
+        {
+            turnlabel.text = "Turn: Barbarians";
+
+        }
+        else
+        {
+            turnlabel.text = "Turn: Vikings";
+        }
+        vikingsTakenLabel.text = "Vikings Taken: " + knightsTaken.ToString();
+        barbariansTakenLabel.text = "Barbarians Taken: " + barbariansTaken.ToString();
     }
 
     List<Vector2> removalList = new List<Vector2>( );

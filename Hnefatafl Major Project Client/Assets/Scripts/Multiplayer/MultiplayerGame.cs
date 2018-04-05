@@ -64,6 +64,37 @@ public class MultiplayerGame : Game
         SetupPieces();
     }
 
+    public void Update()
+    {
+        knightsTaken = 12 - knightPos.Count;
+        barbariansTaken = 24 - barbarianPos.Count;
+
+        if (ourTurn)
+        {
+            if (netMan.ourTeam == Team.VIKING)
+            {
+                turnlabel.text = "Turn: Your Barbarians";
+            }
+            else
+            {
+                turnlabel.text = "Turn: Your Vikings";
+            }
+
+        }
+        else
+        {   if(netMan.ourTeam == Team.VIKING)
+            {
+                turnlabel.text = "Turn: Enemy Barbarians";
+            }
+            else
+            {
+                turnlabel.text = "Turn: Enemy Vikings";
+            }
+            
+        }
+        vikingsTakenLabel.text = "Vikings Taken: " + knightsTaken.ToString();
+        barbariansTakenLabel.text = "Barbarians Taken: " + barbariansTaken.ToString();
+    }
 
      public new void CheckForTaken()
     {
@@ -101,23 +132,26 @@ public class MultiplayerGame : Game
         foreach(GameObject barbarian in GameObject.FindGameObjectsWithTag("barbarian")){
             GameObject.Destroy(barbarian);
         }
-       
-        
+
+        float kingx = kingPos.x;
+        float kingy = kingPos.y;
 
         GameObject king = GameObject.Instantiate(piece);
         king.GetComponent<Renderer>().material = kingMat;
         king.name = "King";
-        king.transform.position = new Vector3(size / 2, 0.5f, size / 2);
-        king.AddComponent<Selectable>();
-        king.GetComponent<Selectable>().normalMat = kingMat;
-        king.GetComponent<Selectable>().selectedMat = kingSelMat;
-        king.GetComponent<Selectable>().myPosition = new Vector2(5, 5);
-        king.GetComponent<Selectable>().piece = Piece.King;
+        king.transform.position = new Vector3(kingx, 0.5f, kingy);
+        if(netMan.ourTeam == Team.VIKING)
+        {
+            king.AddComponent<Selectable>();
+            king.GetComponent<Selectable>().normalMat = kingMat;
+            king.GetComponent<Selectable>().selectedMat = kingSelMat;
+            king.GetComponent<Selectable>().myPosition = new Vector2(kingx, kingy);
+            king.GetComponent<Selectable>().piece = Piece.King;
+        }
+        
         king.gameObject.tag = "king";
-        board.board[5, 5] = king;
-
-        king.transform.parent = GameObject.Find("Tile x=5 z=5").transform;
-
+        board.board[(int)kingx, (int)kingy] = king;
+        
         king.SetActive(true);
 
         if (size == 11)
@@ -130,16 +164,16 @@ public class MultiplayerGame : Game
                 goKnight.name = "Knight " + index;
                 goKnight.transform.position = new Vector3(knight.x, 0.5f, knight.y);
                 goKnight.SetActive(true);
-                goKnight.AddComponent<Selectable>();
-                goKnight.GetComponent<Selectable>().normalMat = knightMat;
-                goKnight.GetComponent<Selectable>().selectedMat = knightSelMat;
-                goKnight.GetComponent<Selectable>().piece = Piece.Knight;
-
-                goKnight.GetComponent<Selectable>().myPosition = new Vector2(knight.x, knight.y);
+                if(netMan.ourTeam == Team.VIKING)
+                {
+                    goKnight.AddComponent<Selectable>();
+                    goKnight.GetComponent<Selectable>().normalMat = knightMat;
+                    goKnight.GetComponent<Selectable>().selectedMat = knightSelMat;
+                    goKnight.GetComponent<Selectable>().piece = Piece.Knight;
+                    goKnight.GetComponent<Selectable>().myPosition = new Vector2(knight.x, knight.y);
+                }
+                
                 goKnight.gameObject.tag = "knight";
-                string tempSearchName = "Tile x=" + knight.x + " z=" + knight.y;
-                goKnight.transform.parent = GameObject.Find(tempSearchName).transform;
-
                 board.board[(int)knight.x, (int)knight.y] = goKnight;
 
                 index++;
@@ -154,18 +188,17 @@ public class MultiplayerGame : Game
                 goBarbarian.name = "Barbarian " + index;
                 goBarbarian.transform.position = new Vector3(barbarian.x, 0.5f, barbarian.y);
                 goBarbarian.SetActive(true);
-                goBarbarian.AddComponent<Selectable>();
-                goBarbarian.GetComponent<Selectable>().normalMat = barbarianMat;
-                goBarbarian.GetComponent<Selectable>().selectedMat = barbarianSelMat;
-                goBarbarian.GetComponent<Selectable>().piece = Piece.Barbarian;
-
-                goBarbarian.GetComponent<Selectable>().myPosition = new Vector2(barbarian.x, barbarian.y);
+                if(netMan.ourTeam == Team.BARBARIAN)
+                {
+                    goBarbarian.AddComponent<Selectable>();
+                    goBarbarian.GetComponent<Selectable>().normalMat = barbarianMat;
+                    goBarbarian.GetComponent<Selectable>().selectedMat = barbarianSelMat;
+                    goBarbarian.GetComponent<Selectable>().piece = Piece.Barbarian;
+                    goBarbarian.GetComponent<Selectable>().myPosition = new Vector2(barbarian.x, barbarian.y);
+                }
+                
                 goBarbarian.gameObject.tag = "barbarian";
-                string tempSearchName = "Tile x=" + barbarian.x + " z=" + barbarian.y;
-                goBarbarian.transform.parent = GameObject.Find(tempSearchName).transform;
-
                 board.board[(int)barbarian.x, (int)barbarian.y] = goBarbarian;
-
                 index++;
             }
 
