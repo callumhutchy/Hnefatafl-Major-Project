@@ -1,0 +1,14 @@
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Server Application\Server Application\bin\Release\Server Application.exe.config
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Server Application\Server Application\bin\Release\Server Application.exe
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Server Application\Server Application\bin\Release\Server Application.pdb
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Server Application\Server Application\obj\Release\MainWindow.g.cs
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Server Application\Server Application\obj\Release\App.g.cs
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Server Application\Server Application\obj\Release\Server Application_MarkupCompile.cache
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Server Application\Server Application\obj\Release\Server Application_MarkupCompile.lref
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Server Application\Server Application\obj\Release\MainWindow.baml
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Server Application\Server Application\obj\Release\Server Application.g.resources
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Server Application\Server Application\obj\Release\Server_Application.Properties.Resources.resources
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Server Application\Server Application\obj\Release\Server Application.csproj.GenerateResource.Cache
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Server Application\Server Application\obj\Release\Server Application.csproj.CoreCompileInputs.cache
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Server Application\Server Application\obj\Release\Server Application.exe
+C:\Users\callu\Documents\Hnefatafl-Major-Project\Server Application\Server Application\obj\Release\Server Application.pdb

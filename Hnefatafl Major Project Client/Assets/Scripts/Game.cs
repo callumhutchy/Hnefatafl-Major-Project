@@ -48,10 +48,8 @@ public class Game : MonoBehaviour
         gameData = GameObject.FindGameObjectWithTag("game_data").GetComponent<MenuData>();
         if (gameData != null)
         {
-            Player1 = gameData.Player1;
-            Player2 = gameData.Player2;
 
-            if (Player1 == "Barbarian")
+            if (gameData.Player1 == Team.BARBARIAN)
             {
                 isBarbarians = true;
             }

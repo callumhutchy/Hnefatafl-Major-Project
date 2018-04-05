@@ -19,6 +19,7 @@ namespace Server_Application
         public Guid firstPlayer = Guid.Empty;
         public Guid turn = Guid.Empty;
         public string boardState;
+        public bool disconnect = false;
 
         private GameData (Guid p1, Guid p2, Guid g1)
         {
@@ -32,7 +33,7 @@ namespace Server_Application
             return new GameData(p1, p2, Guid.NewGuid());
         }
 
-        private GameData(Guid g1, Guid p1, Guid p2, bool p1r, bool p2r, Team tm1, Team tm2, Guid first, Guid tur, string board)
+        private GameData(Guid g1, Guid p1, Guid p2, bool p1r, bool p2r, Team tm1, Team tm2, Guid first, Guid tur, string board, bool dc)
         {
             player1 = p1;
             player2 = p2;
@@ -44,11 +45,12 @@ namespace Server_Application
             firstPlayer = first;
             turn = first;
             boardState = board;
+            disconnect = dc;
 
         }
         public String Serialize()
         {
-            return gameId.ToString() + ":" + player1.ToString() + ":" + player2.ToString() + ":" + p1Ready.ToString() + ":" + p2Ready.ToString() + ":" + piece1.ToString() + ":" + piece2.ToString() + ":" + firstPlayer.ToString() + ":" + turn.ToString() + ":" + boardState;
+            return gameId.ToString() + ":" + player1.ToString() + ":" + player2.ToString() + ":" + p1Ready.ToString() + ":" + p2Ready.ToString() + ":" + piece1.ToString() + ":" + piece2.ToString() + ":" + firstPlayer.ToString() + ":" + turn.ToString() + ":" + boardState + ":" + disconnect.ToString();
         }
 
         public static GameData Deserialise(string input)
@@ -64,7 +66,8 @@ namespace Server_Application
             Guid first = new Guid(splitString[7]);
             Guid trn = new Guid(splitString[8]);
             string board = splitString[9];
-            return new GameData(gID, p1, p2, p1R, p2R, tm1, tm2, first, trn, board);
+            bool dc = bool.Parse(splitString[10]);
+            return new GameData(gID, p1, p2, p1R, p2R, tm1, tm2, first, trn, board, dc);
         }
 
         public  void SetPieces()

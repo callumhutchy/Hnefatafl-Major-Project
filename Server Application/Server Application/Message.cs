@@ -86,7 +86,8 @@ namespace Server_Application
         FIRST_TURN,
         WAITING_FOR_OUR_TURN,
         TAKING_OUR_TURN,
-        NEXT_TURN
+        NEXT_TURN,
+        OPPONENT_DISCONNECT
 
     }
 

@@ -29,6 +29,7 @@ public class NetManager : MonoBehaviour
     private bool loadMuliplayerGame = false;
     private bool whenGameLoaded = false;
 
+    private bool loadMenu = false;
     public bool nextTurn = false;
 
     public MultiplayerGame multiplayerGame;
@@ -42,12 +43,21 @@ public class NetManager : MonoBehaviour
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             //Connect to server
-            IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
+            try{
+                
+                IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("192.168.1.75"), port);
 
             Debug.Log("Attempting to connect");
             //Begin connection
             clientSocket.BeginConnect(endPoint, ConnectCallback, null);
 
+            }catch(Exception){
+                IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
+
+            Debug.Log("Attempting to connect");
+            //Begin connection
+            clientSocket.BeginConnect(endPoint, ConnectCallback, null);
+            }
         }
         catch (SocketException ex)
         {
@@ -75,6 +85,8 @@ public class NetManager : MonoBehaviour
                 multiplayerGame.ourTurn = false;
             }
 
+        }else if(scene.name == "Main Menu"){
+            Destroy(this);
         }
     }
 
@@ -90,10 +102,7 @@ public class NetManager : MonoBehaviour
 
 
             Debug.Log("Sending client id : " + clientId.ToString());
-            byte[] data = Encoding.ASCII.GetBytes(new Message(MessageType.CONNECT, clientId.ToString()).Serialize());
-            Debug.Log("Began sending " + data.Length + " bytes");
-            clientSocket.BeginSend(data, 0, data.Length, SocketFlags.None, new AsyncCallback(SendCallback), clientSocket);
-
+            Send(new Message(MessageType.CONNECT, clientId.ToString()).Serialize(), clientSocket);
 
             clientSocket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, ReceiveCallback, null);
         }
@@ -239,7 +248,9 @@ public class NetManager : MonoBehaviour
                     exit = true;
                     break;
 
-
+                case MessageType.OPPONENT_DISCONNECT:
+                    loadMenu = true;
+                    break;
 
 
                 default:
@@ -272,6 +283,9 @@ public class NetManager : MonoBehaviour
             multiplayerGame.MovePieces();
             movePieces= false;
         }
+        if(loadMenu){
+            SceneManager.LoadScene("Main Menu");
+        }
 
     }
     static bool sceneLoaded = false;
@@ -287,10 +301,10 @@ public class NetManager : MonoBehaviour
     void OnApplicationQuit()
     {
         Debug.Log("Attempting to quit");
-        //StartCoroutine(TimeToQuit());
+        StartCoroutine(TimeToQuit());
         if (!allowQuitting)
         {
-            //Application.CancelQuit();
+            Application.CancelQuit();
         }
 
     }
