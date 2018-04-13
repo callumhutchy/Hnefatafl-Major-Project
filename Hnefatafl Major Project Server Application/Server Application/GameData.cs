@@ -20,6 +20,7 @@ namespace Server_Application
         public Guid turn = Guid.Empty;
         public string boardState;
         public bool disconnect = false;
+        public Guid winner = Guid.Empty;
 
         private GameData (Guid p1, Guid p2, Guid g1)
         {
@@ -33,7 +34,7 @@ namespace Server_Application
             return new GameData(p1, p2, Guid.NewGuid());
         }
 
-        private GameData(Guid g1, Guid p1, Guid p2, bool p1r, bool p2r, Team tm1, Team tm2, Guid first, Guid tur, string board, bool dc)
+        private GameData(Guid g1, Guid p1, Guid p2, bool p1r, bool p2r, Team tm1, Team tm2, Guid first, Guid tur, string board, bool dc, Guid win)
         {
             player1 = p1;
             player2 = p2;
@@ -46,11 +47,12 @@ namespace Server_Application
             turn = first;
             boardState = board;
             disconnect = dc;
+            winner = win;
 
         }
         public String Serialize()
         {
-            return gameId.ToString() + ":" + player1.ToString() + ":" + player2.ToString() + ":" + p1Ready.ToString() + ":" + p2Ready.ToString() + ":" + piece1.ToString() + ":" + piece2.ToString() + ":" + firstPlayer.ToString() + ":" + turn.ToString() + ":" + boardState + ":" + disconnect.ToString();
+            return gameId.ToString() + ":" + player1.ToString() + ":" + player2.ToString() + ":" + p1Ready.ToString() + ":" + p2Ready.ToString() + ":" + piece1.ToString() + ":" + piece2.ToString() + ":" + firstPlayer.ToString() + ":" + turn.ToString() + ":" + boardState + ":" + disconnect.ToString() + ":" + winner.ToString();
         }
 
         public static GameData Deserialise(string input)
@@ -67,7 +69,8 @@ namespace Server_Application
             Guid trn = new Guid(splitString[8]);
             string board = splitString[9];
             bool dc = bool.Parse(splitString[10]);
-            return new GameData(gID, p1, p2, p1R, p2R, tm1, tm2, first, trn, board, dc);
+            Guid win = new Guid(splitString[11]);
+            return new GameData(gID, p1, p2, p1R, p2R, tm1, tm2, first, trn, board, dc, win);
         }
 
         public  void SetPieces()

@@ -57,5 +57,42 @@ public class GameUI : MonoBehaviour {
 		winText.text = "Vikings Win!";
 		winUI.SetActive(true);
 	}
-	
+
+    public bool oVikingsWin = false;
+    public bool oBarbariansWin = false;
+    public bool vikingsWin = false;
+    public bool barbariansWin = false;
+
+    void OVikingsWin()
+    {
+        oVikingsWin = true;
+    }
+
+    void OBarbariansWin()
+    {
+        oBarbariansWin = true;
+    }
+
+    private void Update()
+    {
+        if (oVikingsWin)
+        {
+            gameUI.SetActive(false);
+            winText.text = "Enemy Vikings Win!";
+            winUI.SetActive(true);
+        }
+        else if (oBarbariansWin)
+        {
+            gameUI.SetActive(false);
+            winText.text = "Enemy Barbarians Win!";
+            winUI.SetActive(true);
+        }else if (vikingsWin)
+        {
+            VikingsWin();
+        }else if (barbariansWin)
+        {
+            BarbariansWin();
+        }
+    }
+
 }

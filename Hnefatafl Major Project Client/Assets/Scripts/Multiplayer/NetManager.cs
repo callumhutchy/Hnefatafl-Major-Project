@@ -29,22 +29,56 @@ public class NetManager : MonoBehaviour
     public bool areWeFirst;
 
     private bool loadMuliplayerGame = false;
-    private bool whenGameLoaded = false;
 
-    private bool loadMenu = false;
-    public bool nextTurn = false;
+    private bool loadMenu;
+    public bool nextTurn;
 
     public MultiplayerGame multiplayerGame;
 
     public GameObject waitingIcon;
     public TMP_Text waitingText;
-    public static bool waiting = true;
+    public static bool waiting;
 
-    public bool quit = false;
+    public bool quit;
+
+    public bool weWon;
+
+
+    static bool sceneLoaded;
+
+
+    public static string waitingString;
+
+
+    static bool movePieces;
+
+
+    bool allowQuitting;
+    static bool exit;
+
+    static bool disconnect;
+
+    public void SetVariables()
+    {
+        disconnect = false;
+        exit = false;
+        allowQuitting = false;
+        movePieces = false;
+        sceneLoaded = false;
+        weWon = false;
+        quit = false;
+        waiting = true;
+        loadMenu = false;
+        nextTurn = false;
+        
+
+    }
 
     void Awake()
     {
-        
+        SetVariables();
+
+
         GameObject.DontDestroyOnLoad(this);
         clientId = Guid.NewGuid();
         try
@@ -54,8 +88,8 @@ public class NetManager : MonoBehaviour
             //Connect to server
             try{
 
-                IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("192.168.1.75"), port);
-                //IPEndPoint endPoint = new IPEndPoint(Dns.GetHostEntry("ec2-52-56-171-201.eu-west-2.compute.amazonaws.com").AddressList[0], port);
+                //IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
+                IPEndPoint endPoint = new IPEndPoint(Dns.GetHostEntry("ec2-52-56-171-201.eu-west-2.compute.amazonaws.com").AddressList[0], port);
             Debug.Log("Attempting to connect");
             //Begin connection
             clientSocket.BeginConnect(endPoint, ConnectCallback, null);
@@ -78,12 +112,11 @@ public class NetManager : MonoBehaviour
 
 
     }
-
-    public static string waitingString;
-
+    
     void Start()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
+        waiting = true;
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode lsm)
@@ -100,7 +133,8 @@ public class NetManager : MonoBehaviour
             }
 
         }else if(scene.name == "Main Menu"){
-            Destroy(this);
+            GameObject.Destroy(GameObject.FindGameObjectWithTag("net_man"));
+            
         }
     }
 
@@ -136,12 +170,15 @@ public class NetManager : MonoBehaviour
         }
     }
 
+    public void LeaveQueueButton()
+    {
+        disconnect = true;
+    }
+
     //This method will loop 
     void ReceiveCallback(IAsyncResult ar)
     {
-
-
-        try
+                try
         {
             int received = clientSocket.EndReceive(ar);
 
@@ -166,6 +203,15 @@ public class NetManager : MonoBehaviour
                 Log("Sending a leave message");
                 Send(new Message(MessageType.DISCONNECT, "Can we leave", myId, clientId).Serialize(), clientSocket);
                 disconnect = false;
+            }
+
+            if (weWon)
+            {
+                Log("We won sending to server");
+                BoardState board = new BoardState(multiplayerGame.knightPos, multiplayerGame.barbarianPos, multiplayerGame.kingPos);
+
+                Send(new Message(MessageType.GAME_OVER, board.Serialize(), myId, clientId).Serialize(), clientSocket);
+                return;
             }
 
             switch (msg.type)
@@ -288,8 +334,21 @@ public class NetManager : MonoBehaviour
                 case MessageType.OPPONENT_DISCONNECT:
                     loadMenu = true;
                     break;
+                case MessageType.GAME_OVER:
+                    Log("We lost");
+                    BoardState boardState = BoardState.Deserialise(msg.message);
+                    multiplayerGame.knightPos = new List<Vector2>();
+                    multiplayerGame.knightPos = boardState.knightsPos;
+                    multiplayerGame.barbarianPos = new List<Vector2>();
+                    multiplayerGame.barbarianPos = boardState.barbariansPos;
+                    Debug.Log(multiplayerGame.knightPos.Count + " : " + multiplayerGame.barbarianPos.Count);
+                    multiplayerGame.kingPos = boardState.kingPos;
+                    multiplayerGame.ourTurn = true;
+                    movePieces = true;
 
+                    multiplayerGame.WeLost();
 
+                    break;
                 default:
                     Send(new Message(MessageType.IGNORE, "Waiting", myId, clientId).Serialize(), clientSocket);
 
@@ -307,11 +366,14 @@ public class NetManager : MonoBehaviour
         }
 
     }
-
-    static bool movePieces = false;
-
+    
     void Update()
     {
+        if(exit && SceneManager.GetActiveScene().name == "MultiplayerLobby")
+        {
+            SceneManager.LoadScene("Main Menu");
+        }
+
         if (loadMuliplayerGame)
         {
             SceneManager.LoadScene("MultiplayerScene");
@@ -338,16 +400,11 @@ public class NetManager : MonoBehaviour
         }
     }
 
-    static bool sceneLoaded = false;
     IEnumerator WaitForLoad()
     {
         yield return new WaitUntil(() => sceneLoaded == true);
     }
 
-    bool allowQuitting = false;
-    static bool exit = false;
-
-    static bool disconnect = false;
     void OnApplicationQuit()
     {
         Debug.Log("Attempting to quit");

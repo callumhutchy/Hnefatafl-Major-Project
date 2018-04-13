@@ -73,11 +73,11 @@ public class MultiplayerGame : Game
         {
             if (netMan.ourTeam == Team.VIKING)
             {
-                turnlabel.text = "Turn: Your Barbarians";
+                turnlabel.text = "Turn: Your Vikings";
             }
             else
             {
-                turnlabel.text = "Turn: Your Vikings";
+                turnlabel.text = "Turn: Your Barbarians";
             }
 
         }
@@ -113,6 +113,140 @@ public class MultiplayerGame : Game
             }
         }
         
+    }
+
+    public void WeLost()
+    {
+        if (netMan.ourTeam == Team.VIKING)
+        {
+            Debug.Log("Enemy Barbarians win!!! We lose");
+            gameUI.oBarbariansWin = true;
+        }
+        else
+        {
+            Debug.Log("Enemy Vikings Win");
+            gameUI.oVikingsWin= true;
+        }
+    }
+    public new void takenAlgo(string side, Vector2 piece, bool isKing)
+    {
+        //Debug.Log(piece.x + " " + piece.y);
+
+        bool isTaken = false;
+
+        Vector2 north, east, south, west;
+        north = new Vector2(piece.x, piece.y + 1);
+        east = new Vector2(piece.x + 1, piece.y);
+        south = new Vector2(piece.x, piece.y - 1);
+        west = new Vector2(piece.x - 1, piece.y);
+
+        bool northNull = false, eastNull = false, southNull = false, westNull = false;
+        bool northPiece = false, eastPiece = false, southPiece = false, westPiece = false;
+
+        if (north.x < 0 || north.y < 0 || north.x >= size || north.y >= size)
+        {
+            northNull = true;
+            //Debug.Log("North Null");
+        }
+        else if (board.board[(int)north.x, (int)north.y] != null)
+        {
+            if (board.board[(int)north.x, (int)north.y].gameObject.tag.Equals(side))
+            {
+                //Debug.Log("Theres a north piece");
+                northPiece = true;
+            }
+        }
+
+        if (south.x < 0 || south.y < 0 || south.x >= size || south.y >= size)
+        {
+            southNull = true;
+            //Debug.Log("South Null");
+        }
+        else if (board.board[(int)south.x, (int)south.y] != null)
+        {
+            if (board.board[(int)south.x, (int)south.y].gameObject.tag.Equals(side))
+            {
+                //Debug.Log("Theres a south piece");
+                southPiece = true;
+            }
+        }
+
+        if (east.x < 0 || east.y < 0 || east.x >= size || east.y >= size)
+        {
+            eastNull = true;
+            //Debug.Log("East Null");
+        }
+        else if (board.board[(int)east.x, (int)east.y] != null)
+        {
+            if (board.board[(int)east.x, (int)east.y].gameObject.tag.Equals(side))
+            {
+                //Debug.Log("Theres an east piece");
+                eastPiece = true;
+            }
+        }
+
+        if (west.x < 0 || west.y < 0 || west.x >= size || west.y >= size)
+        {
+            westNull = true;
+            //Debug.Log("West Null");
+        }
+        else if (board.board[(int)west.x, (int)west.y] != null)
+        {
+            if (board.board[(int)west.x, (int)west.y].gameObject.tag.Equals(side))
+            {
+                //Debug.Log("There a west piece");
+                westPiece = true;
+            }
+        }
+
+        if (northPiece && southPiece && !isKing)
+        {
+            isTaken = true;
+        }
+        if (eastPiece && westPiece && !isKing)
+        {
+            isTaken = true;
+        }
+
+        if ((northPiece || northNull) && (eastPiece || eastNull) && (southPiece || southNull) && (westPiece || westNull) && isKing)
+        {
+            isTaken = true;
+        }
+
+
+        if (isTaken)
+        {
+            GameObject.Destroy(board.board[(int)piece.x, (int)piece.y]);
+
+            if (side == "barbarian" && !isKing)
+            {
+
+                //knightPos.RemoveAt(knightPos.FindIndex(x => x.x == piece.x && x.y == piece.y));
+                removalList.Add(new Vector2(piece.x, piece.y));
+
+                knightsTaken++;
+            }
+            else if (side == "knight" && !isKing)
+            {
+                //barbarianPos.RemoveAt(barbarianPos.FindIndex(x => x.x == piece.x && x.y == piece.y));
+                removalList.Add(new Vector2(piece.x, piece.y));
+                barbariansTaken++;
+            }
+            else if (isKing)
+            {
+                if(netMan.ourTeam == Team.BARBARIAN)
+                {
+                    Debug.Log("Barbarians win!!!");
+                    gameUI.barbariansWin = true;
+                    netMan.weWon = true;
+                }
+                
+            }
+
+
+        }
+
+
     }
 
     public new void NextTurn()

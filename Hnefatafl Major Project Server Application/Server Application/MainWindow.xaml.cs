@@ -37,19 +37,28 @@ namespace Server_Application
 
         private static List<GameData> gameList = new List<GameData>();
         private static List<Guid> waitingPlayers = new List<Guid>();
-        
+
+        bool serverStarted = false;
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            SetupServer();
-            Thread uiUpdater = new Thread(UIUpdater);
-            uiUpdater.Start();
-            Thread logManagementThread = new Thread(new ThreadStart(LogManagement));
-            logManagementThread.Start();
-            Log("Started Log Manager");
+            if (!serverStarted)
+            {
+                SetupServer();
+                Thread uiUpdater = new Thread(UIUpdater);
+                uiUpdater.Start();
+                Thread logManagementThread = new Thread(new ThreadStart(LogManagement));
+                logManagementThread.Start();
+                Log("Started Log Manager");
+                serverStarted = true;
+            }
+            else
+            {
+                serverSocket.Close();
+            }
+            
         }
-
-       
-
+        
         private void UIUpdater()
         {
             while (true)
@@ -85,16 +94,11 @@ namespace Server_Application
             socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), socket);
             serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), null);
         }
-
-
-
-
-
+        
         private static void ReceiveCallback(IAsyncResult ar)
         {
             Socket socket = (Socket)ar.AsyncState;
             int received = socket.EndReceive(ar);
-            Log(received.ToString());
             byte[] dataBuf = new byte[received];
             Array.Copy(buffer, dataBuf, received);
             string text = Encoding.ASCII.GetString(dataBuf);
@@ -258,10 +262,8 @@ namespace Server_Application
                     else
                     {
                         Send(new Message(MessageType.PLAYER_FOUND, game.gameId.ToString(), message.userId).Serialize(), socket);
-                    }
-                    
+                    } 
                     break;
-
                 case MessageType.TAKING_OUR_TURN:
                     if (gd.disconnect)
                     {
@@ -271,7 +273,6 @@ namespace Server_Application
                     {
                         Send(new Message(MessageType.TAKING_OUR_TURN, "Ok keep going", message.userId).Serialize(), socket);
                     }
-                    
                     break;
                 case MessageType.WAITING_FOR_OUR_TURN:
 
@@ -284,12 +285,22 @@ namespace Server_Application
                     {
                         if (gd.turn == message.userId)
                         {
-                            Send(new Message(MessageType.YOUR_TURN, gd.boardState, message.userId).Serialize(), socket);
+                            if(gd.winner == Guid.Empty)
+                            {
+                                Send(new Message(MessageType.YOUR_TURN, gd.boardState, message.userId).Serialize(), socket);
+                            }
+                            else
+                            {
+                                if(gd.winner != message.userId)
+                                {
+                                    Send(new Message(MessageType.GAME_OVER, gd.boardState, message.userId).Serialize(), socket);
+                                }
+                            }
+
                         }
                         else
                         {
                             Send(new Message(MessageType.WAITING_FOR_OUR_TURN, "Ok we're still waiting for the other player", message.userId).Serialize(), socket);
-
                         }
                     }
                     
@@ -313,6 +324,17 @@ namespace Server_Application
                     
                 case MessageType.GAME_OVER:
                     //Still need stuff here
+                    Log("Game has ended " + gd.gameId.ToString());
+                    Log("Winner is " + message.userId);
+                    gameList.Find(x => x.gameId == gd.gameId).winner = message.userId;
+                    if (gd.player1 == message.userId)
+                    {
+                        gameList.Find(x => x.player1 == message.userId).turn = gd.player2;
+                    }
+                    else
+                    {
+                        gameList.Find(x => x.player2 == message.userId).turn = gd.player1;
+                    }
                     break;
                 default:
                     Send(new Message(MessageType.IGNORE, "Ignore", clientSockets.Find(x => x.clientId == clientId).userId).Serialize(), socket);
@@ -389,6 +411,12 @@ namespace Server_Application
             {
                 LogManager();
             }
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            Application.Current.Shutdown();
         }
 
     }

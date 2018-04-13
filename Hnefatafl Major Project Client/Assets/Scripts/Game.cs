@@ -80,7 +80,6 @@ public class Game : MonoBehaviour
         }
     }
 
-
     public void Setup()
     {
 
@@ -164,7 +163,7 @@ public class Game : MonoBehaviour
         barbariansTakenLabel.text = "Barbarians Taken: " + barbariansTaken.ToString();
     }
 
-    List<Vector2> removalList = new List<Vector2>( );
+    public List<Vector2> removalList = new List<Vector2>( );
 
     public void CheckForTaken()
     {

@@ -6,9 +6,7 @@ public class Selectable : MonoBehaviour
 {
 
     public Game gameController;
-
-    public MultiplayerGame multiGameController;
-
+    
     public Piece piece;
 
     public Vector2 myPosition;
@@ -18,7 +16,7 @@ public class Selectable : MonoBehaviour
 
     public GameObject movementTile;
 
-    bool netGame = false;
+    public bool netGame = false;
 
     public List<GameObject> selectableTiles = new List<GameObject>();
 
@@ -276,8 +274,19 @@ public class Selectable : MonoBehaviour
             gameController.kingPos = new Vector2(tran.position.x, tran.position.z);
             if (IsCorner((int)gameController.kingPos.x, (int)gameController.kingPos.y, 11) && !IsThrone((int)gameController.kingPos.x, (int)gameController.kingPos.y))
             {
-                Debug.Log("Knights Win");
-                gameController.gameUI.VikingsWin();
+                if (netGame)
+                {
+                    Debug.Log("Knights Win");
+                    gameController.gameUI.vikingsWin = true;
+                    MultiplayerGame mg = (MultiplayerGame)gameController;
+                    mg.netMan.weWon = true;
+                }
+                else
+                {
+                    Debug.Log("Knights Win");
+                    gameController.gameUI.VikingsWin();
+                }
+                
 
             }
         }
