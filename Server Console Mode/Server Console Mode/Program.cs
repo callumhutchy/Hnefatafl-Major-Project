@@ -272,15 +272,21 @@ namespace Server_Console_Mode
                     if (gd.player1 == message.userId)
                     {
                         gameList.Find(x => x.player1 == message.userId).turn = gd.player2;
+                        gameList.Find(x => x.gameId == gd.gameId).boardState = message.message;
+                        Send(new Message(MessageType.WAITING_FOR_OUR_TURN, "Start waiting for your turn", message.userId).Serialize(), socket);
+                    }
+                    else if (gd.player2 == message.userId)
+                    {
+                        gameList.Find(x => x.player2 == message.userId).turn = gd.player1;
+                        gameList.Find(x => x.gameId == gd.gameId).boardState = message.message;
+                        Send(new Message(MessageType.WAITING_FOR_OUR_TURN, "Start waiting for your turn", message.userId).Serialize(), socket);
                     }
                     else
                     {
-                        gameList.Find(x => x.player2 == message.userId).turn = gd.player1;
+                        Log("Didn't get the message correctly, please send again");
+                        Send(new Message(MessageType.SEND_AGAIN, "Please Send again", message.userId).Serialize(), socket);
                     }
 
-                    gameList.Find(x => x.gameId == gd.gameId).boardState = message.message;
-
-                    Send(new Message(MessageType.WAITING_FOR_OUR_TURN, "Start waiting for your turn", message.userId).Serialize(), socket);
 
                     break;
 

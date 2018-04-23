@@ -13,6 +13,8 @@ public class MainMenu : MonoBehaviour {
 	public GameObject MainMenuPanel;
 	public GameObject HotSeatMenuPanel;
 
+    public GameObject HelpMenu;
+
     public AudioSource audioSource;
     public AudioClip audioClip;
 
@@ -44,6 +46,18 @@ public class MainMenu : MonoBehaviour {
         PlayButtonSound();
         Application.Quit();
         
+    }
+
+    public void OnHelpClick(){
+        PlayButtonSound();
+        MainMenuPanel.SetActive(false);
+        HelpMenu.SetActive(true);
+    }
+
+    public void HelpBackClick(){
+        PlayButtonSound();
+        HelpMenu.SetActive(false);
+        MainMenuPanel.SetActive(true);
     }
 
 

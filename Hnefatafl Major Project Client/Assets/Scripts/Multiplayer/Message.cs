@@ -85,6 +85,7 @@ public enum MessageType
     TAKING_OUR_TURN,
     NEXT_TURN,
     OPPONENT_DISCONNECT,
+    SEND_AGAIN,
     QUIT
 
 }

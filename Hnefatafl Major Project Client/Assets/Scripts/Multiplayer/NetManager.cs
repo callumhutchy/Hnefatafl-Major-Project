@@ -70,7 +70,7 @@ public class NetManager : MonoBehaviour
         waiting = true;
         loadMenu = false;
         nextTurn = false;
-        
+
 
     }
 
@@ -86,15 +86,18 @@ public class NetManager : MonoBehaviour
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             //Connect to server
-            try{
+            try
+            {
 
                 IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
                 // IPEndPoint endPoint = new IPEndPoint(Dns.GetHostEntry("ec2-35-178-83-188.eu-west-2.compute.amazonaws.com").AddressList[0], port);
-            Debug.Log("Attempting to connect");
-            //Begin connection
-            clientSocket.BeginConnect(endPoint, ConnectCallback, null);
+                Debug.Log("Attempting to connect");
+                //Begin connection
+                clientSocket.BeginConnect(endPoint, ConnectCallback, null);
 
-            }catch(Exception ex){
+            }
+            catch (Exception ex)
+            {
                 /*
                 IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
 
@@ -112,7 +115,7 @@ public class NetManager : MonoBehaviour
 
 
     }
-    
+
     void Start()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -126,15 +129,20 @@ public class NetManager : MonoBehaviour
             loadMuliplayerGame = false;
             sceneLoaded = true;
             multiplayerGame = GameObject.FindGameObjectWithTag("GameController").GetComponent<MultiplayerGame>();
-            if(areWeFirst){
+            if (areWeFirst)
+            {
                 multiplayerGame.ourTurn = true;
-            }else{
+            }
+            else
+            {
                 multiplayerGame.ourTurn = false;
             }
 
-        }else if(scene.name == "Main Menu"){
+        }
+        else if (scene.name == "Main Menu")
+        {
             GameObject.Destroy(GameObject.FindGameObjectWithTag("net_man"));
-            
+
         }
     }
 
@@ -147,7 +155,7 @@ public class NetManager : MonoBehaviour
         {
             waitingString = text;
         }
-        
+
     }
 
     //Start the callback loop
@@ -178,7 +186,7 @@ public class NetManager : MonoBehaviour
     //This method will loop 
     void ReceiveCallback(IAsyncResult ar)
     {
-                try
+        try
         {
             int received = clientSocket.EndReceive(ar);
 
@@ -248,7 +256,7 @@ public class NetManager : MonoBehaviour
                     {
                         areWeFirst = true;
                         opponentId = gameData.player2;
-                        
+
                         ourTeam = gameData.piece1;
                     }
                     else
@@ -262,10 +270,11 @@ public class NetManager : MonoBehaviour
                     loadMuliplayerGame = true;
 
 
-                    while(!sceneLoaded){
+                    while (!sceneLoaded)
+                    {
 
                         //Wasting time
-                        
+
                     }
                     waiting = false;
                     if (areWeFirst)
@@ -300,8 +309,15 @@ public class NetManager : MonoBehaviour
                         }
                     }
                     break;
+
+                case MessageType.SEND_AGAIN:
+                    Log("Sending turn over");
+                    BoardState board1 = new BoardState(multiplayerGame.knightPos, multiplayerGame.barbarianPos, multiplayerGame.kingPos);
+                    Send(new Message(MessageType.NEXT_TURN, board1.Serialize(), myId, clientId).Serialize(), clientSocket);
+                    nextTurn = false;
+                    break;
                 case MessageType.WAITING_FOR_OUR_TURN:
-                   System.Threading.Thread.Sleep(2000);
+                    System.Threading.Thread.Sleep(2000);
                     if (quit)
                     {
                         Send(new Message(MessageType.QUIT, "We are quitting", myId, clientId).Serialize(), clientSocket);
@@ -366,10 +382,10 @@ public class NetManager : MonoBehaviour
         }
 
     }
-    
+
     void Update()
     {
-        if(exit && SceneManager.GetActiveScene().name == "MultiplayerLobby")
+        if (exit && SceneManager.GetActiveScene().name == "MultiplayerLobby")
         {
             SceneManager.LoadScene("Main Menu");
         }
@@ -378,18 +394,20 @@ public class NetManager : MonoBehaviour
         {
             SceneManager.LoadScene("MultiplayerScene");
         }
-        if(movePieces){
+        if (movePieces)
+        {
             multiplayerGame.MovePieces();
-            movePieces= false;
+            movePieces = false;
         }
-        if(loadMenu){
+        if (loadMenu)
+        {
             SceneManager.LoadScene("Main Menu");
         }
         if (waiting)
         {
             waitingText.text = waitingString;
         }
-        
+
     }
 
     private void FixedUpdate()
