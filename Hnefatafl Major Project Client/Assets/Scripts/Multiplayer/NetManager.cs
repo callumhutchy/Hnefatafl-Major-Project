@@ -89,7 +89,7 @@ public class NetManager : MonoBehaviour
             try{
 
                 IPEndPoint endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
-                // IPEndPoint endPoint = new IPEndPoint(Dns.GetHostEntry("ec2-35-178-83-188.eu-west-2.compute.amazonaws.com").AddressList[0], port);
+                // IPEndPoint endPoint = new IPEndPoint(Dns.GetHostEntry("ec2-52-56-171-201.eu-west-2.compute.amazonaws.com").AddressList[0], port);
             Debug.Log("Attempting to connect");
             //Begin connection
             clientSocket.BeginConnect(endPoint, ConnectCallback, null);
