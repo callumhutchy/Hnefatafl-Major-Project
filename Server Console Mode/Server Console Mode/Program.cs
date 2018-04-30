@@ -12,6 +12,7 @@ namespace Server_Console_Mode
 {
     class Program
     {
+        //https://docs.microsoft.com/en-us/dotnet/framework/network-programming/asynchronous-server-socket-example
         private static List<string> logQueue = new List<string>();
 
         private static byte[] buffer = new byte[2048];
@@ -38,8 +39,7 @@ namespace Server_Console_Mode
                 serverSocket.Close();
             }
         }
-
-     
+        
         private static void SetupServer()
         {
             Log("Setting up server...");
@@ -51,8 +51,6 @@ namespace Server_Console_Mode
         private static void AcceptCallback(IAsyncResult ar)
         {
             Socket socket = serverSocket.EndAccept(ar);
-
-
             socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), socket);
             serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), null);
         }
@@ -346,7 +344,6 @@ namespace Server_Console_Mode
 
         private static string logPath = "log.txt";
         
-
         private static void LogManager()
         {
             if (logQueue.Count > 0)
@@ -384,7 +381,6 @@ namespace Server_Console_Mode
                 LogManager();
             }
         }
-
         
     }
 }
