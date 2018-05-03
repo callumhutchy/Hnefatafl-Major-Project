@@ -13,9 +13,17 @@ namespace Server_Console_Mode
     class Program
     {
         //https://docs.microsoft.com/en-us/dotnet/framework/network-programming/asynchronous-server-socket-example
+        //Some of the server connection code is editied code from the above link.
+        //It will be noted where this code is.
+
+
+        //Queue to hold messages that need printing to the log view
         private static List<string> logQueue = new List<string>();
 
+        //A section of memory to reuse when receiving messages, instead of reallocating every time a message is received
         private static byte[] buffer = new byte[2048];
+
+
         private static Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         private static List<ClientInfo> clientSockets = new List<ClientInfo>();
 
@@ -362,6 +370,8 @@ namespace Server_Console_Mode
 
             }
         }
+
+
 
         private static void LogManagement()
         {

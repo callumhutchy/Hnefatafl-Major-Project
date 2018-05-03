@@ -5,17 +5,26 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Server_Console_Mode
-{
+{   
+
+    //The Message class that is used to help transfer information between programs
     [Serializable]
     public class Message
     {
+        //Main contents of the message
         public string message;
+        //
         public MessageType type;
+        //Used to detect whether this is the first time a client is connecting
         public bool hasId = false;
+        //Used to say if this is a client message to enable extra authentication
         public bool clientMessage = false;
+        //A Guid for the userid
         public Guid userId = Guid.Empty;
+        //A Guid for the clientid
         public Guid clientId;
 
+        //The contructor used when
         public Message(MessageType t, string msg)
         {
             message = msg;
@@ -41,11 +50,13 @@ namespace Server_Console_Mode
             clientId = cid;
         }
 
+        //The serialize method converts an instance of the class into a string representation.
         public String Serialize()
         {
             return type.ToString() + "|" + message + "|" + hasId.ToString() + "|" + clientMessage.ToString() + "|" + userId.ToString() + "|" + clientId.ToString() + "|<EOF>";
         }
 
+        //This will convert a string representation into an object of the class
         public static Message Deserialize(string input)
         {
             Console.WriteLine(input);
@@ -55,6 +66,7 @@ namespace Server_Console_Mode
             bool has = bool.Parse(splitString[2]);
             bool clientMsg = bool.Parse(splitString[3]);
             Guid uid;
+            
             if (has)
             {
                 if (clientMsg)
@@ -70,6 +82,8 @@ namespace Server_Console_Mode
 
         }
     }
+
+    //The enumerator used to switch between functions when handling a message
     public enum MessageType
     {
         CONNECT,
