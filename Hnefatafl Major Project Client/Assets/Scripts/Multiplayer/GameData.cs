@@ -7,18 +7,34 @@ using System.Text;
 using System;
 [Serializable]
 class GameData
-{
+{//The user Id's of the two players
     public Guid player1;
     public Guid player2;
+
+    //A unique id for the game
     public Guid gameId;
+
+    //Two booleans to make sure both clients are ready before sending out the game
     public bool p1Ready = false;
     public bool p2Ready = false;
+
+    //The teams
     public Team piece1 = Team.NONE;
     public Team piece2 = Team.NONE;
+
+    //The id of the first player
     public Guid firstPlayer = Guid.Empty;
+
+    //The id of the current turn player
     public Guid turn = Guid.Empty;
+
+    //The board state, this could be of type Board State but its easier to handle in string form.
     public string boardState;
+
+    //Whether any player has disconnected
     public bool disconnect = false;
+
+    //Who the winner is
     public Guid winner = Guid.Empty;
 
     private GameData(Guid p1, Guid p2, Guid g1)
@@ -49,64 +65,71 @@ class GameData
         winner = win;
 
     }
-    public String Serialize()
-    {
-        return gameId.ToString() + ":" + player1.ToString() + ":" + player2.ToString() + ":" + p1Ready.ToString() + ":" + p2Ready.ToString() + ":" + piece1.ToString() + ":" + piece2.ToString() + ":" + firstPlayer.ToString() + ":" + turn.ToString() + ":" + boardState + ":" + disconnect.ToString() + ":" + winner.ToString();
-    }
-
-    public static GameData Deserialise(string input)
-    {
-        string[] splitString = input.Split(':');
-        Guid gID = new Guid(splitString[0]);
-        Guid p1 = new Guid(splitString[1]);
-        Guid p2 = new Guid(splitString[2]);
-        bool p1R = bool.Parse(splitString[3]);
-        bool p2R = bool.Parse(splitString[4]);
-        Team tm1 = (Team)Enum.Parse(typeof(Team), splitString[5]);
-        Team tm2 = (Team)Enum.Parse(typeof(Team), splitString[6]);
-        Guid first = new Guid(splitString[7]);
-        Guid trn = new Guid(splitString[8]);
-        string board = splitString[9];
-        bool dc = bool.Parse(splitString[10]);
-        Guid win = new Guid(splitString[11]);
-        return new GameData(gID, p1, p2, p1R, p2R, tm1, tm2, first, trn, board, dc, win);
-    }
-
-    public void SetPieces()
-    {
-        if (piece1 == Team.NONE && piece2 == Team.NONE)
+   //Convert game to string 
+        public String Serialize()
         {
-           System.Random rand = new System.Random();
-            int index = rand.Next(0, 2);
-            if (index == 0)
+            return gameId.ToString() + ":" + player1.ToString() + ":" + player2.ToString() + ":" + p1Ready.ToString() + ":" + p2Ready.ToString() + ":" + piece1.ToString() + ":" + piece2.ToString() + ":" + firstPlayer.ToString() + ":" + turn.ToString() + ":" + boardState + ":" + disconnect.ToString() + ":" + winner.ToString();
+        }
+
+        //Convert string to GameData object
+        public static GameData Deserialise(string input)
+        {
+            //Produce an array of string by splitting the input string around a semicolon
+            //Then by know the order of the variables, convert them into their correct types
+            string[] splitString = input.Split(':');
+            Guid gID = new Guid(splitString[0]);
+            Guid p1 = new Guid(splitString[1]);
+            Guid p2 = new Guid(splitString[2]);
+            bool p1R = bool.Parse(splitString[3]);
+            bool p2R = bool.Parse(splitString[4]);
+            Team tm1 = (Team)Enum.Parse(typeof(Team), splitString[5]);
+            Team tm2 = (Team)Enum.Parse(typeof(Team), splitString[6]);
+            Guid first = new Guid(splitString[7]);
+            Guid trn = new Guid(splitString[8]);
+            string board = splitString[9];
+            bool dc = bool.Parse(splitString[10]);
+            Guid win = new Guid(splitString[11]);
+            return new GameData(gID, p1, p2, p1R, p2R, tm1, tm2, first, trn, board, dc, win);
+        }
+
+        //Used to randomly assign teams to the two players
+        public void SetPieces()
+        {
+            if (piece1 == Team.NONE && piece2 == Team.NONE)
             {
-                piece1 = Team.BARBARIAN;
-                piece2 = Team.VIKING;
-            }
-            else
-            {
-                piece1 = Team.VIKING;
-                piece2 = Team.BARBARIAN;
+               System.Random rand = new System.Random();
+                int index = rand.Next(0, 2);
+                if (index == 0)
+                {
+                    piece1 = Team.BARBARIAN;
+                    piece2 = Team.VIKING;
+                }
+                else
+                {
+                    piece1 = Team.VIKING;
+                    piece2 = Team.BARBARIAN;
+                }
             }
         }
-    }
 
-    public void SetFirst()
-    {
-        if (firstPlayer == Guid.Empty)
+        //Used to randomly pick which player goes first
+        public void SetFirst()
         {
-            System.Random rand = new System.Random();
-            int index = rand.Next(0, 2);
-            if (index == 0)
+            if (firstPlayer == Guid.Empty)
             {
-                firstPlayer = player1;
-            }
-            else
-            {
-                firstPlayer = player2;
+                System.Random rand = new System.Random();
+                int index = rand.Next(0, 2);
+                if (index == 0)
+                {
+                    firstPlayer = player1;
+                }
+                else
+                {
+                    firstPlayer = player2;
+                }
             }
         }
-    }
+
 
 }
 

@@ -97,7 +97,6 @@
      <Compile Include="Assets\PostProcessing\Runtime\Utils\MaterialFactory.cs" />
      <Compile Include="Assets\PostProcessing\Runtime\Utils\RenderTextureFactory.cs" />
      <Compile Include="Assets\PostProcessing\Utilities\CustomMotionTexture\ExampleWheelController.cs" />
-     <Compile Include="Assets\Scripts\Audio Manager.cs" />
      <Compile Include="Assets\Scripts\Board.cs" />
      <Compile Include="Assets\Scripts\CameraMovement.cs" />
      <Compile Include="Assets\Scripts\Game.cs" />
@@ -108,7 +107,6 @@
      <Compile Include="Assets\Scripts\Multiplayer\Message.cs" />
      <Compile Include="Assets\Scripts\Multiplayer\MultiplayerGame.cs" />
      <Compile Include="Assets\Scripts\Multiplayer\NetManager.cs" />
-     <Compile Include="Assets\Scripts\Multiplayer\StringCipher.cs" />
      <Compile Include="Assets\Scripts\Selectable.cs" />
      <Compile Include="Assets\Scripts\UI\GameUI.cs" />
      <Compile Include="Assets\Scripts\UI\MainMenu.cs" />

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Server_Application
 {
+    //Custom vector 2 class, this has no methods like the Unity version and just serves as a storage container
     class Vector2
     {
         public float x;
@@ -16,9 +17,6 @@ namespace Server_Application
             this.x = x;
             this.y = y;
         }
-
-
-
 
 
     }

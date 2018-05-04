@@ -6,36 +6,37 @@ using TMPro;
 
 public class Game : MonoBehaviour
 {
-
+    //Reference to the board
     public Board board;
-
+    //Size of the board
     public int size = 11;
-
+    //List that contain the position of the pieces
     public List<Vector2> knightPos = new List<Vector2>();
     public List<Vector2> barbarianPos = new List<Vector2>();
-
+    //The kings position
     public Vector2 kingPos;
-
+    //The currently selected piece
     public GameObject selectedPiece = null;
-
+    //Are we the first player
     public bool isFirstPlayer = true;
-
+    //Is the current turn barbarians or vikings
     public bool isBarbarians = false;
-
+    //The names of the two players
     public string Player1 = "";
     public string Player2 = "";
-
+    //Get a reference of the menu data
     public MenuData gameData = null;
-
+    //Number of each side taken
     public int knightsTaken = 0;
     public int barbariansTaken = 0;
-
+    //The game ui object
     public GameUI gameUI;
-
+    //The materials for the pieces
     public Material kingMat, knightMat, barbarianMat, kingSelMat, knightSelMat, barbarianSelMat;
+    //The prefab of a piece
     public GameObject piece;
 
-
+    //Text objects for the user interface
     public TMP_Text turnlabel;
     public TMP_Text vikingsTakenLabel;
     public TMP_Text barbariansTakenLabel;
@@ -43,29 +44,28 @@ public class Game : MonoBehaviour
 
     public void Start()
     {
+        //Get the text elements and assign them
         turnlabel = GameObject.FindGameObjectWithTag("turn_label").GetComponent<TMP_Text>();
         vikingsTakenLabel = GameObject.FindGameObjectWithTag("vikings_taken").GetComponent<TMP_Text>();
         barbariansTakenLabel = GameObject.FindGameObjectWithTag("barbarians_taken").GetComponent<TMP_Text>();
     }
 
     public void Awake()
-    {
-
-        
-
+    {   
+        //Load the materials
         kingMat = (Material)Resources.Load("Materials/KingMat");
         knightMat = (Material)Resources.Load("Materials/KnightMat");
         barbarianMat = (Material)Resources.Load("Materials/BarbarianMat");
-
         kingSelMat = (Material)Resources.Load("Materials/KingSelectedMat");
         knightSelMat = (Material)Resources.Load("Materials/KnightSelectedMat");
         barbarianSelMat = (Material)Resources.Load("Materials/BarbarianSelectedMat");
-
+        //Load the piece prefab
         piece = (GameObject)Resources.Load("Prefabs/GamePiece");
+        //Get the game data
         gameData = GameObject.FindGameObjectWithTag("game_data").GetComponent<MenuData>();
         if (gameData != null)
-        {
-
+        {   
+            //Assign the first player team
             if (gameData.Player1 == Team.BARBARIAN)
             {
                 isBarbarians = true;
@@ -75,6 +75,7 @@ public class Game : MonoBehaviour
                 isBarbarians = false;
             }
 
+            //Setup the board
             Setup();
 
         }
@@ -82,18 +83,20 @@ public class Game : MonoBehaviour
 
     public void Setup()
     {
-
+        //Destroy the game data now
         GameObject.Destroy(gameData);
 
-
+        //Fill the positions of the pieces
         FillKnightPos();
         FillBarbarianPos();
         kingPos = new Vector2(5, 5);
-
+        //Generate a board
         board.Generate(size);
+        //Create the pieces
         SetupPieces();
     }
 
+    //The set positions for the vikings
     protected void FillKnightPos()
     {
         knightPos.Add(new Vector2(5, 3));
@@ -111,6 +114,7 @@ public class Game : MonoBehaviour
 
     }
 
+    //The set positions for the barbarians
     protected void FillBarbarianPos()
     {
         barbarianPos.Add(new Vector2(3, 0));
@@ -139,6 +143,7 @@ public class Game : MonoBehaviour
         barbarianPos.Add(new Vector2(7, 10));
     }
     
+    //Flip the turn
     public void NextTurn()
     {
         isBarbarians = !isBarbarians;
@@ -147,6 +152,7 @@ public class Game : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Changed the pieces taken messages relative to the size of the corresponding lists
         knightsTaken = 12 - knightPos.Count;
         barbariansTaken = 24 - barbarianPos.Count;
 
@@ -163,38 +169,32 @@ public class Game : MonoBehaviour
         barbariansTakenLabel.text = "Barbarians Taken: " + barbariansTaken.ToString();
     }
 
+    //Pieces that need removing from the board
     public List<Vector2> removalList = new List<Vector2>( );
 
+    //Checks if there are any peices that have been taken and adds them to the removal list
     public void CheckForTaken()
     {
         removalList = new List<Vector2>();
 
-
-
         if (isBarbarians)
         {
-
             foreach (Vector2 knight in knightPos)
             {
                 takenAlgo("barbarian", knight, false);
-
-
             }
 
             takenAlgo("barbarian", kingPos, true);
             foreach(Vector2 piece in removalList){
                 knightPos.RemoveAt(knightPos.FindIndex(x => x.x == piece.x && x.y == piece.y));
-                
+             
             }
-
-
         }
         else
         {
             foreach (Vector2 barbarian in barbarianPos)
             {
                 takenAlgo("knight", barbarian, false);
-
 
             }
             foreach(Vector2 piece in removalList){
@@ -204,6 +204,7 @@ public class Game : MonoBehaviour
         }
     }
 
+    //The main algorithm that checks if a piece has been taken
     public void takenAlgo(string side, Vector2 piece, bool isKing)
     {
         //Debug.Log(piece.x + " " + piece.y);
@@ -320,6 +321,7 @@ public class Game : MonoBehaviour
 
     }
 
+    //Create the pieces for the game board
     public void SetupPieces()
     {
 
@@ -393,6 +395,4 @@ public class Game : MonoBehaviour
 
 
     }
-
-
 }

@@ -5,24 +5,41 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Server_Application
-{   
+{
     [Serializable]
     class GameData
     {
+        //The user Id's of the two players
         public Guid player1;
         public Guid player2;
+
+        //A unique id for the game
         public Guid gameId;
+
+        //Two booleans to make sure both clients are ready before sending out the game
         public bool p1Ready = false;
         public bool p2Ready = false;
+
+        //The teams
         public Team piece1 = Team.NONE;
         public Team piece2 = Team.NONE;
+
+        //The id of the first player
         public Guid firstPlayer = Guid.Empty;
+
+        //The id of the current turn player
         public Guid turn = Guid.Empty;
+
+        //The board state, this could be of type Board State but its easier to handle in string form.
         public string boardState;
+
+        //Whether any player has disconnected
         public bool disconnect = false;
+
+        //Who the winner is
         public Guid winner = Guid.Empty;
 
-        private GameData (Guid p1, Guid p2, Guid g1)
+        private GameData(Guid p1, Guid p2, Guid g1)
         {
             player1 = p1;
             player2 = p2;
@@ -50,13 +67,18 @@ namespace Server_Application
             winner = win;
 
         }
+
+        //Convert game to string 
         public String Serialize()
         {
             return gameId.ToString() + ":" + player1.ToString() + ":" + player2.ToString() + ":" + p1Ready.ToString() + ":" + p2Ready.ToString() + ":" + piece1.ToString() + ":" + piece2.ToString() + ":" + firstPlayer.ToString() + ":" + turn.ToString() + ":" + boardState + ":" + disconnect.ToString() + ":" + winner.ToString();
         }
 
+        //Convert string to GameData object
         public static GameData Deserialise(string input)
         {
+            //Produce an array of string by splitting the input string around a semicolon
+            //Then by know the order of the variables, convert them into their correct types
             string[] splitString = input.Split(':');
             Guid gID = new Guid(splitString[0]);
             Guid p1 = new Guid(splitString[1]);
@@ -73,13 +95,14 @@ namespace Server_Application
             return new GameData(gID, p1, p2, p1R, p2R, tm1, tm2, first, trn, board, dc, win);
         }
 
-        public  void SetPieces()
+        //Used to randomly assign teams to the two players
+        public void SetPieces()
         {
-            if(piece1 == Team.NONE && piece2 == Team.NONE)
+            if (piece1 == Team.NONE && piece2 == Team.NONE)
             {
                 Random rand = new Random();
                 int index = rand.Next(0, 2);
-                if(index == 0)
+                if (index == 0)
                 {
                     piece1 = Team.BARBARIAN;
                     piece2 = Team.VIKING;
@@ -91,14 +114,15 @@ namespace Server_Application
                 }
             }
         }
-        
+
+        //Used to randomly pick which player goes first
         public void SetFirst()
         {
-            if(firstPlayer == Guid.Empty)
+            if (firstPlayer == Guid.Empty)
             {
                 Random rand = new Random();
                 int index = rand.Next(0, 2);
-                if(index == 0)
+                if (index == 0)
                 {
                     firstPlayer = player1;
                 }

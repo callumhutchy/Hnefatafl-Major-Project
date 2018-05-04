@@ -4,25 +4,32 @@ using UnityEngine;
 
 public class Selectable : MonoBehaviour
 {
-
+    //Reference to the game
     public Game gameController;
     
+    //What piece we are
     public Piece piece;
 
+    //Our current position
     public Vector2 myPosition;
 
+    //Our selected and unselected material
     public Material normalMat;
     public Material selectedMat;
 
+    //The movement tile prefab
     public GameObject movementTile;
 
+    //Whether this is a netgame
     public bool netGame = false;
 
+    //List of our movement tiles
     public List<GameObject> selectableTiles = new List<GameObject>();
 
     // Use this for initialization
     void Start()
     {
+        //Establish whether this is an online game
         if (GameObject.FindGameObjectWithTag("net_man"))
         {
             gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<MultiplayerGame>();
@@ -33,16 +40,16 @@ public class Selectable : MonoBehaviour
             gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>();
         }
 
-
+        //Load the movement tile prefab
         movementTile = (GameObject)Resources.Load("Prefabs/MovementPlace");
     }
 
     // Update is called once per frame
     void Update()
     {
+        //If the piece is not selected, change the material to the normal mat and delete the movement tiles
         if (gameController.selectedPiece != this.transform.gameObject)
         {
-            //GetComponent<cakeslice.Outline>().enabled = false;
             GetComponent<Renderer>().material = normalMat;
             foreach (GameObject go in selectableTiles)
             {
@@ -53,11 +60,9 @@ public class Selectable : MonoBehaviour
 
     }
 
-
     void OnMouseOver()
     {
-
-
+        //If its a multiplayer game then we have to handle selection differently
         if (netGame)
         {
             Debug.Log("Mouing over");
@@ -78,11 +83,11 @@ public class Selectable : MonoBehaviour
             }
 
         }
+        //If its not an online game we just change selection using a simple toggle
         else
         {
             if (Input.GetMouseButtonDown(0) && ((gameController.isBarbarians && this.gameObject.tag.Equals("barbarian")) || (!gameController.isBarbarians && !this.gameObject.tag.Equals("barbarian"))))
             {
-
                 gameController.selectedPiece = this.transform.gameObject;
                 GetComponent<Renderer>().material = selectedMat;
                 FindPossibleMoves();
@@ -97,6 +102,7 @@ public class Selectable : MonoBehaviour
         GameObject[,] board = gameController.board.board;
         List<string> directions = new List<string>();
 
+        //Check for all the null positions in the 4 directions
         //Is tile west null
         if (myPosition.x == 0)
         {
@@ -157,6 +163,8 @@ public class Selectable : MonoBehaviour
             return;
         }
 
+        //Generate movement tiles for all of the directions add the the direction list
+        
         if (directions.Contains("south"))
         {
 
@@ -238,6 +246,7 @@ public class Selectable : MonoBehaviour
 
     }
 
+    //Changed the material to the normal material and unselect the piece
     void SetNormal()
     {
         gameController.selectedPiece = null;
@@ -247,17 +256,17 @@ public class Selectable : MonoBehaviour
     public void MoveToLocation(Transform tran)
     {
         Debug.Log("Size of the lists before moving " + gameController.knightPos.Count + ":" + gameController.barbarianPos.Count);
+        
+        //Destroy the movement tiles
         foreach (GameObject go in selectableTiles)
         {
             DestroyObject(go);
         }
 
+        //The old location on the board is now free
         gameController.board.board[(int)this.transform.position.x, (int)this.transform.position.z] = null;
 
-
-        
-        
-        
+        //Depending on which piece it is, remove it from its old positon array and re add it a the new position
         if (this.gameObject.tag.Equals("barbarian"))
         {
             gameController.barbarianPos.RemoveAt(gameController.barbarianPos.FindIndex(x => x.x == this.transform.position.x && x.y == this.transform.position.z));
@@ -291,17 +300,18 @@ public class Selectable : MonoBehaviour
             }
         }
 
+        //Assign the new position to the 3D object
         this.transform.position = new Vector3( tran.position.x, 0.5f, tran.position.z);
-
+        //Save our 2d locaton
         myPosition = new Vector2(tran.position.x, tran.position.z);
-
+        //Add the new object to the board
         gameController.board.board[(int)myPosition.x, (int)myPosition.y] = this.gameObject;
-
+        //Set the piece back to normal
         SetNormal();
-        
+        //Now check if any pieces were taken in the game
         gameController.CheckForTaken();
 
-
+        //Tell the server we have had out turn if it is a multiplayer game
         if(netGame){
             Debug.Log("Moved piece");
             MultiplayerGame game = (MultiplayerGame) gameController;
@@ -312,6 +322,7 @@ public class Selectable : MonoBehaviour
         Debug.Log("Size of the lists after moving " + gameController.knightPos.Count + ":" + gameController.barbarianPos.Count);
     }
 
+    //Generate a movement tile at the specified location
     void GenerateTile(int posX, int posY)
     {
         GameObject g2 = GameObject.Instantiate(movementTile);
@@ -321,6 +332,7 @@ public class Selectable : MonoBehaviour
         selectableTiles.Add(g2);
     }
 
+    //Determinds if the coordinates are the corners
     bool IsCorner(int x, int y, int width)
     {
         if (x == 0 && y == 0)
@@ -347,6 +359,7 @@ public class Selectable : MonoBehaviour
         return false;
     }
 
+    //Determines if the coordinates are the throne
     bool IsThrone(int x, int y)
     {
         if (x == 5 && y == 5)

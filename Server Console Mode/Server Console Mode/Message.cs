@@ -24,7 +24,7 @@ namespace Server_Console_Mode
         //A Guid for the clientid
         public Guid clientId;
 
-        //The contructor used when
+        
         public Message(MessageType t, string msg)
         {
             message = msg;
@@ -67,14 +67,18 @@ namespace Server_Console_Mode
             bool clientMsg = bool.Parse(splitString[3]);
             Guid uid;
             
+            //If the client has been provided a user id
             if (has)
             {
+                //If the message is coming from the client to the server then we need to retrieve the client id as well
                 if (clientMsg)
                 {
                     uid = new Guid(splitString[4]);
+
                     Guid cid = new Guid(splitString[5]);
                     return new Message(type, message, uid, cid);
                 }
+
                 uid = new Guid(splitString[4]);
                 return new Message(type, message, uid);
             }

@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 
 namespace Server_Application
 {
+    //This class provides a way of converting the game board into a string, and can be used to turn a string back into a board
+    //The functions of this class are not used in the server, it is only used to be able to reference board states
     class BoardState
     {
-
+        //Lists if Vector 2s to store the positions of the pieces
         public List<Vector2> knightsPos;
         public List<Vector2> barbariansPos;
-
+        //The King is referenced separately
         public Vector2 kingPos;
 
         public BoardState(List<Vector2> knights, List<Vector2> barbarians, Vector2 king)
@@ -21,6 +23,8 @@ namespace Server_Application
             kingPos = king;
         }
 
+
+        //Converts a board state into a string representation
         public string Serialize()
         {
             string knights = "";
@@ -41,6 +45,8 @@ namespace Server_Application
             return knights + ":" + barbarians + ":" + king;
         }
 
+
+        //Converts a string representation back into an instance of a BoardState
         public static BoardState Deserialise(string input)
         {
             string[] splitString = input.Split(':');

@@ -2,29 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//A child of Game, this implements network features for the online multiplayer games
 public class MultiplayerGame : Game
 {
+    //Reference to the network manager
     public NetManager netMan = null;
-
-    
-
+    //Is it our turn
     public bool ourTurn = false;
 
     public new void Awake()
     {
+        //Load the materials
         kingMat = (Material)Resources.Load("Materials/KingMat");
         knightMat = (Material)Resources.Load("Materials/KnightMat");
         barbarianMat = (Material)Resources.Load("Materials/BarbarianMat");
-
         kingSelMat = (Material)Resources.Load("Materials/KingSelectedMat");
         knightSelMat = (Material)Resources.Load("Materials/KnightSelectedMat");
         barbarianSelMat = (Material)Resources.Load("Materials/BarbarianSelectedMat");
-
+        //Load the piece prefab
         piece = (GameObject)Resources.Load("Prefabs/GamePiece");
-
+        //Get the network manager
         netMan = GameObject.FindGameObjectWithTag("net_man").GetComponent<NetManager>();
         if (netMan != null)
         {
+            //Assign the game information 
             if (netMan.areWeFirst)
             {
                 Player1 = netMan.myId.ToString();
@@ -47,7 +48,7 @@ public class MultiplayerGame : Game
                 isBarbarians = false;
             }
 
-
+            //Setup the game
             Setup();
 
         }
@@ -55,20 +56,22 @@ public class MultiplayerGame : Game
 
     public new void Setup()
     {
-
+            //Fill the positions of the pieces
         FillKnightPos();
         FillBarbarianPos();
         kingPos = new Vector2(5, 5);
-
+//Generate a board
         board.Generate(size);
+        //Create the pieces
         SetupPieces();
     }
 
     public void Update()
     {
+         //Changed the pieces taken messages relative to the size of the corresponding lists
         knightsTaken = 12 - knightPos.Count;
         barbariansTaken = 24 - barbarianPos.Count;
-
+        //Update the turn label, to display whos turn it is
         if (ourTurn)
         {
             if (netMan.ourTeam == Team.VIKING)
@@ -96,6 +99,7 @@ public class MultiplayerGame : Game
         barbariansTakenLabel.text = "Barbarians Taken: " + barbariansTaken.ToString();
     }
 
+ //Checks if there are any peices that have been taken
      public new void CheckForTaken()
     {
         Debug.Log("Checking for taken");
@@ -115,6 +119,7 @@ public class MultiplayerGame : Game
         
     }
 
+    //Display that we have lost
     public void WeLost()
     {
         if (netMan.ourTeam == Team.VIKING)
@@ -128,6 +133,8 @@ public class MultiplayerGame : Game
             gameUI.oVikingsWin= true;
         }
     }
+
+    //The main algorithm that checks if a piece has been taken
     public new void takenAlgo(string side, Vector2 piece, bool isKing)
     {
         //Debug.Log(piece.x + " " + piece.y);
@@ -249,6 +256,7 @@ public class MultiplayerGame : Game
 
     }
 
+    //Flag the next turn
     public new void NextTurn()
     {
         Debug.Log("Next turn");
@@ -256,6 +264,7 @@ public class MultiplayerGame : Game
         ourTurn = false;
     }
 
+    //Move the pieces on the board when we receive the new positions from the server
     public void MovePieces()
     {
         board.board = new GameObject[11, 11];
