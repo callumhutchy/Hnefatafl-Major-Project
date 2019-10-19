@@ -50,7 +50,7 @@ public class Selectable : MonoBehaviour
         //If the piece is not selected, change the material to the normal mat and delete the movement tiles
         if (gameController.selectedPiece != this.transform.gameObject)
         {
-            GetComponent<Renderer>().material = normalMat;
+            //GetComponent<Renderer>().material = normalMat;
             foreach (GameObject go in selectableTiles)
             {
                 Object.Destroy(go);
@@ -250,7 +250,7 @@ public class Selectable : MonoBehaviour
     void SetNormal()
     {
         gameController.selectedPiece = null;
-        GetComponent<Renderer>().material = normalMat;
+        //GetComponent<Renderer>().material = normalMat;
     }
 
     public void MoveToLocation(Transform tran)

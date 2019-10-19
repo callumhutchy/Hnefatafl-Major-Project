@@ -36,6 +36,10 @@ public class Game : MonoBehaviour
     //The prefab of a piece
     public GameObject piece;
 
+    public GameObject barbarianPiece;
+    public GameObject knightPiece;
+    public GameObject kingPiece;
+
     //Text objects for the user interface
     public TMP_Text turnlabel;
     public TMP_Text vikingsTakenLabel;
@@ -61,6 +65,12 @@ public class Game : MonoBehaviour
         barbarianSelMat = (Material)Resources.Load("Materials/BarbarianSelectedMat");
         //Load the piece prefab
         piece = (GameObject)Resources.Load("Prefabs/GamePiece");
+        
+        barbarianPiece = (GameObject)Resources.Load("Prefabs/Character_Warrior_White");
+        knightPiece = (GameObject)Resources.Load("Prefabs/Character_Soldier_01_Yellow");
+        kingPiece = (GameObject)Resources.Load("Prefabs/Character_Knight_01_Yellow");
+            
+        
         //Get the game data
         gameData = GameObject.FindGameObjectWithTag("game_data").GetComponent<MenuData>();
         if (gameData != null)
@@ -325,13 +335,13 @@ public class Game : MonoBehaviour
     public void SetupPieces()
     {
 
-        GameObject king = GameObject.Instantiate(piece);
-        king.GetComponent<Renderer>().material = kingMat;
+        GameObject king = GameObject.Instantiate(kingPiece);
+        //king.GetComponent<Renderer>().material = kingMat;
         king.name = "King";
         king.transform.position = new Vector3(size / 2, 0.5f, size / 2);
         king.AddComponent<Selectable>();
-        king.GetComponent<Selectable>().normalMat = kingMat;
-        king.GetComponent<Selectable>().selectedMat = kingSelMat;
+        //king.GetComponent<Selectable>().normalMat = kingMat;
+        //king.GetComponent<Selectable>().selectedMat = kingSelMat;
         king.GetComponent<Selectable>().myPosition = new Vector2(5, 5);
         king.GetComponent<Selectable>().piece = Piece.King;
         king.gameObject.tag = "king";
@@ -346,14 +356,14 @@ public class Game : MonoBehaviour
             int index = 1;
             foreach (Vector2 knight in knightPos)
             {
-                GameObject goKnight = GameObject.Instantiate(piece);
-                goKnight.GetComponent<Renderer>().material = knightMat;
+                GameObject goKnight = GameObject.Instantiate(knightPiece);
+                //goKnight.GetComponent<Renderer>().material = knightMat;
                 goKnight.name = "Knight " + index;
                 goKnight.transform.position = new Vector3(knight.x, 0.5f, knight.y);
                 goKnight.SetActive(true);
                 goKnight.AddComponent<Selectable>();
-                goKnight.GetComponent<Selectable>().normalMat = knightMat;
-                goKnight.GetComponent<Selectable>().selectedMat = knightSelMat;
+                //goKnight.GetComponent<Selectable>().normalMat = knightMat;
+                //goKnight.GetComponent<Selectable>().selectedMat = knightSelMat;
                 goKnight.GetComponent<Selectable>().piece = Piece.Knight;
 
                 goKnight.GetComponent<Selectable>().myPosition = new Vector2(knight.x, knight.y);
@@ -370,14 +380,14 @@ public class Game : MonoBehaviour
 
             foreach (Vector2 barbarian in barbarianPos)
             {
-                GameObject goBarbarian = GameObject.Instantiate(piece);
-                goBarbarian.GetComponent<Renderer>().material = barbarianMat;
+                GameObject goBarbarian = GameObject.Instantiate(barbarianPiece);
+                //goBarbarian.GetComponent<Renderer>().material = barbarianMat;
                 goBarbarian.name = "Barbarian " + index;
                 goBarbarian.transform.position = new Vector3(barbarian.x, 0.5f, barbarian.y);
                 goBarbarian.SetActive(true);
                 goBarbarian.AddComponent<Selectable>();
-                goBarbarian.GetComponent<Selectable>().normalMat = barbarianMat;
-                goBarbarian.GetComponent<Selectable>().selectedMat = barbarianSelMat;
+                //goBarbarian.GetComponent<Selectable>().normalMat = barbarianMat;
+                //goBarbarian.GetComponent<Selectable>().selectedMat = barbarianSelMat;
                 goBarbarian.GetComponent<Selectable>().piece = Piece.Barbarian;
 
                 goBarbarian.GetComponent<Selectable>().myPosition = new Vector2(barbarian.x, barbarian.y);
