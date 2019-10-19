@@ -53,7 +53,7 @@ public class Selectable : MonoBehaviour
             GetComponent<Renderer>().material = normalMat;
             foreach (GameObject go in selectableTiles)
             {
-                DestroyObject(go);
+                Object.Destroy(go);
             }
         }
 
@@ -260,7 +260,7 @@ public class Selectable : MonoBehaviour
         //Destroy the movement tiles
         foreach (GameObject go in selectableTiles)
         {
-            DestroyObject(go);
+            Object.Destroy(go);
         }
 
         //The old location on the board is now free

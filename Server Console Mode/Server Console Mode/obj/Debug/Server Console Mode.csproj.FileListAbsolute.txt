@@ -12,3 +12,10 @@ C:\Users\Callum\Documents\Major Project\Server Console Mode\Server Console Mode\
 C:\Users\Callum\Documents\Major Project\Server Console Mode\Server Console Mode\bin\Debug\Server Console Mode.exe.config
 C:\Users\Callum\Documents\Major Project\Server Console Mode\Server Console Mode\bin\Debug\Server Console Mode.exe
 C:\Users\Callum\Documents\Major Project\Server Console Mode\Server Console Mode\bin\Debug\Server Console Mode.pdb
+F:\Programming\Hnefatafl-Major-Project\Server Console Mode\Server Console Mode\bin\Debug\Server Console Mode.exe.config
+F:\Programming\Hnefatafl-Major-Project\Server Console Mode\Server Console Mode\bin\Debug\Server Console Mode.exe
+F:\Programming\Hnefatafl-Major-Project\Server Console Mode\Server Console Mode\bin\Debug\Server Console Mode.pdb
+F:\Programming\Hnefatafl-Major-Project\Server Console Mode\Server Console Mode\obj\Debug\Server Console Mode.csprojAssemblyReference.cache
+F:\Programming\Hnefatafl-Major-Project\Server Console Mode\Server Console Mode\obj\Debug\Server Console Mode.csproj.CoreCompileInputs.cache
+F:\Programming\Hnefatafl-Major-Project\Server Console Mode\Server Console Mode\obj\Debug\Server Console Mode.exe
+F:\Programming\Hnefatafl-Major-Project\Server Console Mode\Server Console Mode\obj\Debug\Server Console Mode.pdb
